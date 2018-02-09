@@ -46,5 +46,5 @@ Spot a stranger feature
   
 “I want a way to keep in touch with those people, if I like them, and a way to cut contact with them, if I don’t like them.”
 
-
+Please feel free to contact members of the team on Gitter by following the badge below:
 [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/Friend_Builder/Lobby?utm_source=ios&utm_medium=link&utm_campaign=ios-share-link)
