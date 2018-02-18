@@ -1,7 +1,6 @@
 package edu.buffalo.friendbuilder;
 
 import android.content.Intent;
-import android.icu.text.IDNA;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -17,8 +16,8 @@ public class UserCreation extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_creation);
-        email=(EditText)findViewById(R.id.email);
-        pass=(EditText)findViewById(R.id.password);
+        email=(EditText)findViewById(R.id.user);
+        pass=(EditText)findViewById(R.id.pass);
         cpass=(EditText)findViewById(R.id.cpassword);
         b1=(Button)findViewById(R.id.register);
         Info = (TextView)findViewById(R.id.info);
@@ -37,7 +36,7 @@ public class UserCreation extends AppCompatActivity {
 
     }
     private void register(String userName,String userPassword,String confirmPassword){
-        if(userName.equals("Admin") && userPassword.equals("Admin") && userPassword.equals(confirmPassword)){
+        if(userPassword.equals(confirmPassword)){
             Intent intent = new Intent(UserCreation.this,Profile.class);
             Info.setText("Register Successful");
         }else{
