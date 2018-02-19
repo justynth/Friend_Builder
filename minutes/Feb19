@@ -1,0 +1,62 @@
+﻿Team_Randos
+Meeting Minutes
+2/19/2018
+Baldy 019
+
+Start: 10:00 am
+End: 11:05 am
+
+Present:  Brian, Peter, Justyn, Wilson
+
+
+Meeting Discussion:
+
+Confusion about when last week's tasks were supposed to be done.  We met on Wednesday last week.  So, some people thought the tasks were to be done by Wednesday, not Monday.
+Prioritize interface and connecting screens over database for prototype.
+Results of jury duty: We seem fine.
+
+Objective:  A technical user with a programming background can run the prototype.  Assume they have access to Android Studio.
+
+Prof:    Export APK and make it available for download on your phone.
+        Move Minutes branch to its own branch off of Master.  (Minutes do not need to follow code         contribution protocol.)
+        App is a great idea.
+        Fill out Doodle poll for 113/115 student meeting.
+        For MVP, move Ignore Feature to Add-on.  Do that within 72 hours of Deadline on Friday.          Follow project change protocol.
+        Database recommendation: Mongo DB – lets you change schemas as you go.  If you know         exactly what your data models are, you can go with SQL.
+        Scope is fine.
+
+
+Accomplishments Since Last Meeting:
+
+Wilson – Created relational schema for database.
+Peter – Created login screen.
+Brian – Created screen to display nearby users.
+Justyn – Will be done by Wednesday.
+
+
+Tasks to be done by Next Meeting:
+
+All – Have screens done by Wednesday and know how to use Intents class in android studio
+
+
+
+Connect screens
+Youtube video
+
+Release prototype to develop branch on Github
+
+Meet again Wednesday at 10.
+
+By Wednesday:
+
+Wilson – Readme instructions for how to use
+Peter – Navigation Bar.
+Brian – Add Distance field in nearby user list. Color.  Font.
+Justyn – Finish User Profile screen. 
+
+By Next Monday:
+
+Wilson – Play with queries to make the app work with a database; connect to a dummy database and display data on screen.
+Peter – Look into Mongo DB.
+Brian – Move MVP line about hiding to Add-on.  GPS.
+Justyn – Have video done (technically done by friday).
