@@ -4,16 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.buffalo.friendbuilder.UserCreation">
+    tools:context="edu.buffalo.friendbuilder.Login">
 
     <EditText
         android:id="@+id/user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/cpassword"
         android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/cpassword"
-        android:layout_marginTop="55dp"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="67dp"
         android:ems="10"
         android:hint="Email"
         android:inputType="textPersonName" />
@@ -22,40 +22,38 @@
         android:id="@+id/pass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/user"
-        android:layout_alignStart="@+id/user"
         android:layout_below="@+id/user"
-        android:layout_marginTop="28dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
         android:ems="10"
-        android:hint="Password"
+        android:hint="password"
         android:inputType="textPassword" />
 
-    <EditText
-        android:id="@+id/cpassword"
+    <Button
+        android:id="@+id/login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/pass"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="27dp"
-        android:ems="10"
-        android:hint="Confirm Password"
-        android:inputType="textPassword" />
+        android:layout_marginTop="13dp"
+        android:text="Login" />
 
-    <Button
-        android:id="@+id/register"
+    <TextView
+        android:id="@+id/SignUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/cpassword"
+        android:layout_below="@+id/err"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="63dp"
+        android:layout_marginTop="21dp"
+        android:clickable="true"
         android:text="Register" />
 
     <TextView
-        android:id="@+id/info"
+        android:id="@+id/err"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/cpassword"
+        android:layout_below="@+id/login"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="19dp" />
+        android:layout_marginTop="24dp" />
 
 </RelativeLayout>
