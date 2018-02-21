@@ -15,9 +15,9 @@ public class MainActivity extends Activity {
 
         //Made up people, to test the layout
 
-        String person1 = "Bob, I'm cool, Chess,Soccer,Jesus";
-        String person2 = "Jill,I like stuff,Running,Movies,Cats";
-        String person3 = "Clyde,Meet me!,Counting,Broadway,Sledding";
+        String person1 = "Bob, I'm cool, Chess,Soccer,Jesus, 15";
+        String person2 = "Jill,I like stuff,Running,Movies,Cats, 4";
+        String person3 = "Clyde,Meet me!,Counting,Broadway,Sledding, 9";
         String[] example = new String[]{person1, person2, person3};
 
         String[] users = {"Brian", "Ted", "Sam"};
