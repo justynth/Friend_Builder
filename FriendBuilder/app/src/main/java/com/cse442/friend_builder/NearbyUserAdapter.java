@@ -28,6 +28,7 @@ class NearbyUserAdapter extends ArrayAdapter<String> {
 
     public View getView(int position, View convertView, ViewGroup parent){
         LayoutInflater l = LayoutInflater.from(getContext());
+        _position = position;
         View row = l.inflate(R.layout.nearbyuserlist, parent, false);
 
         String userall = getItem(position);
@@ -50,34 +51,44 @@ class NearbyUserAdapter extends ArrayAdapter<String> {
         i3.setText(user[4]);
         dis.setText(user[5]);
 
-
-        b1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (_position == 0) {
+        if (user[0].equals("Bob")) {
+            b1.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
                     Intent intent = new Intent(view.getContext(),Message.class);
                     Bundle name = new Bundle();
                     name.putString("name", "Bob");
                     intent.putExtra("name", name);
                     view.getContext().startActivity(intent);
                 }
-                else if (_position == 1) {
+            });
+        }
+        else if (user[1].equals("Jill")) {
+            b1.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
                     Intent intent = new Intent(view.getContext(),Message.class);
                     Bundle name = new Bundle();
                     name.putString("name", "Jill");
                     intent.putExtra("name", name);
                     view.getContext().startActivity(intent);
                 }
-                else if (_position == 2) {
+            });
+
+        }
+        else if (user[2].equals("Clyde")) {
+            b1.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
                     Intent intent = new Intent(view.getContext(),Message.class);
                     Bundle name = new Bundle();
                     name.putString("name", "Clyde");
                     intent.putExtra("name", name);
                     view.getContext().startActivity(intent);
                 }
-                else {}
-            }
-        });
+            });
+        }
+        else {}
 
         return row;
     }
