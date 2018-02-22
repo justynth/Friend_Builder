@@ -10,6 +10,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.cse442.friend_builder.LoginActivity">
 
+
     <!-- Login progress -->
     <ProgressBar
         android:id="@+id/login_progress"
@@ -69,6 +70,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:onClick="sendMessage"
                 android:text="@string/action_sign_in"
                 android:textStyle="bold" />
 
