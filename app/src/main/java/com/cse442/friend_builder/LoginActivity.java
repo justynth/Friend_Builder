@@ -47,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
         if(u.equals("Admin") && p.equals("Admin")){
-            Intent intent = new Intent(LoginActivity.this,Message.class);
+            Intent intent = new Intent(LoginActivity.this,ProfileActivity.class);
             startActivity(intent);
         }
         else{
