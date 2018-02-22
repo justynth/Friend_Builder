@@ -2,6 +2,8 @@ package com.cse442.friend_builder;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -44,11 +46,19 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void validate(String u,String p){
-
+        SharedPreferences shared = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String user = shared.getString(u,"");
 
         if(u.equals("Admin") && p.equals("Admin")){
             Intent intent = new Intent(LoginActivity.this,ProfileActivity.class);
             startActivity(intent);
+        }else if(user.equals(p))
+        {
+            Intent intent = new Intent(LoginActivity.this,ProfileActivity.class);
+            startActivity(intent);
+        }
+        else if(!user.equalsIgnoreCase("")){
+            err.setText("Email and Password do not match");
         }
         else{
             err.setText("Email and Password do not match");

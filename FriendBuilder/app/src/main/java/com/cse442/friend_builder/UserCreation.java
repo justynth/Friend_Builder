@@ -1,6 +1,8 @@
 package com.cse442.friend_builder;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -37,12 +39,16 @@ public class UserCreation extends AppCompatActivity {
 
     private void validate(String userName,String userPassword, String confirmPassword){
 
+
     }
     private void register(String userName,String userPassword,String confirmPassword){
         if(userPassword.equals(confirmPassword)){
+            SharedPreferences shared = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+            SharedPreferences.Editor editor = shared.edit();
+            editor.putString(userName,userPassword);
+            editor.apply();
             Intent intent = new Intent(UserCreation.this,LoginActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString(userName,userPassword);
             Info.setText("Register Successful");
             startActivity(intent);
 
