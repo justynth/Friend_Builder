@@ -45,6 +45,17 @@ public class UserCreation extends AppCompatActivity {
         });
     }
 
+    private boolean isPasswordValid(String s){
+        return s.length()> 4;
+    }
+
+    private boolean isEmailValid(String e){
+        if(e.contains("@")) {
+            return true;
+        }
+        return false;
+    }
+
     private void devClear(){
         SharedPreferences shared = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = shared.edit();
@@ -56,12 +67,16 @@ public class UserCreation extends AppCompatActivity {
             SharedPreferences shared = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             String user = shared.getString(userName,"");
             if(user.equals("")){
-                SharedPreferences.Editor editor = shared.edit();
-                editor.putString(userName,userPassword);
-                editor.apply();
-                Intent intent = new Intent(UserCreation.this,LoginActivity.class);
-                Info.setText("Register Successful");
-                startActivity(intent);
+                if(isPasswordValid(userPassword)) {
+                    SharedPreferences.Editor editor = shared.edit();
+                    editor.putString(userName, userPassword);
+                    editor.apply();
+                    Intent intent = new Intent(UserCreation.this, LoginActivity.class);
+                    Info.setText("Register Successful");
+                    startActivity(intent);
+                }else{
+                    Info.setText("Invalid Password");
+                }
             }else{
                 Info.setText("Username taken");
             }
