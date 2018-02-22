@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this,ProfileActivity.class);
             startActivity(intent);
         }
-        else if(!user.equalsIgnoreCase("")){
+        else if(!user.equals("")){
             err.setText("Email and Password do not match");
         }
         else{

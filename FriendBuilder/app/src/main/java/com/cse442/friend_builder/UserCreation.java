@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class UserCreation extends AppCompatActivity {
     private EditText email,pass,cpass;
-    private Button b1;
+    private Button b1,b2;
     private TextView Info;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +25,7 @@ public class UserCreation extends AppCompatActivity {
         pass=(EditText)findViewById(R.id.pass);
         cpass=(EditText)findViewById(R.id.cpassword);
         b1=(Button)findViewById(R.id.register);
+        b2=(Button)findViewById(R.id.devclear);
         Info = (TextView)findViewById(R.id.info);
         b1.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -35,23 +36,35 @@ public class UserCreation extends AppCompatActivity {
                 register(s1,s2,s3);
             }
         });
+
+        b2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                devClear();
+            }
+        });
     }
 
-    private void validate(String userName,String userPassword, String confirmPassword){
-
-
+    private void devClear(){
+        SharedPreferences shared = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = shared.edit();
+        editor.clear();
+        editor.apply();
     }
     private void register(String userName,String userPassword,String confirmPassword){
         if(userPassword.equals(confirmPassword)){
             SharedPreferences shared = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
-            SharedPreferences.Editor editor = shared.edit();
-            editor.putString(userName,userPassword);
-            editor.apply();
-            Intent intent = new Intent(UserCreation.this,LoginActivity.class);
-            Info.setText("Register Successful");
-            startActivity(intent);
-
+            String user = shared.getString(userName,"");
+            if(user.equals("")){
+                SharedPreferences.Editor editor = shared.edit();
+                editor.putString(userName,userPassword);
+                editor.apply();
+                Intent intent = new Intent(UserCreation.this,LoginActivity.class);
+                Info.setText("Register Successful");
+                startActivity(intent);
+            }else{
+                Info.setText("Username taken");
+            }
         }else{
             Info.setText("Password doesn't match");
         }
