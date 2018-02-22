@@ -1,4 +1,4 @@
-package edu.buffalo.friendbuilder;
+package com.cse442.friend_builder;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +17,6 @@ public class UserCreation extends AppCompatActivity {
     private TextView Info;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        final Database data = new Database();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_creation);
         email=(EditText)findViewById(R.id.user);
@@ -31,7 +30,7 @@ public class UserCreation extends AppCompatActivity {
                 String s1 = email.getText().toString();
                 String s2 = pass.getText().toString();
                 String s3 = cpass.getText().toString();
-                register(s1,s2,s3,data);
+                register(s1,s2,s3);
             }
         });
     }
@@ -39,11 +38,13 @@ public class UserCreation extends AppCompatActivity {
     private void validate(String userName,String userPassword, String confirmPassword){
 
     }
-    private void register(String userName,String userPassword,String confirmPassword,Database data){
+    private void register(String userName,String userPassword,String confirmPassword){
         if(userPassword.equals(confirmPassword)){
-            Intent intent = new Intent(UserCreation.this,Profile.class);
-            data.getMap().put(userName,userPassword);
+            Intent intent = new Intent(UserCreation.this,LoginActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(userName,userPassword);
             Info.setText("Register Successful");
+            startActivity(intent);
 
         }else{
             Info.setText("Password doesn't match");
