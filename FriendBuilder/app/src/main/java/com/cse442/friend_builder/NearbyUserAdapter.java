@@ -63,7 +63,7 @@ class NearbyUserAdapter extends ArrayAdapter<String> {
                 }
             });
         }
-        else if (user[1].equals("Jill")) {
+        else if (user[0].equals("Jill")) {
             b1.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view) {
@@ -76,7 +76,7 @@ class NearbyUserAdapter extends ArrayAdapter<String> {
             });
 
         }
-        else if (user[2].equals("Clyde")) {
+        else if (user[0].equals("Clyde")) {
             b1.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view) {
