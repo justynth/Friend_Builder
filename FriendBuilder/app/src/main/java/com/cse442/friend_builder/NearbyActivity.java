@@ -16,7 +16,7 @@ public class NearbyActivity extends Activity {
         setContentView(R.layout.activity_nearby);
 
         Intent intent = getIntent();
-        String message = intent.getStringExtra(ProfileActivity.EXTRA_MESSAGE);
+        //String message = intent.getStringExtra(ProfileActivity.EXTRA_MESSAGE);
 
         //Made up people, to test the layout
 

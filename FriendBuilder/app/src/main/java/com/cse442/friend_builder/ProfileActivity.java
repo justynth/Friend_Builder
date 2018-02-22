@@ -1,32 +1,37 @@
 package com.cse442.friend_builder;
 
-import android.app.Activity;
 import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
-/**
- * Created by Brian on 2/21/2018.
- */
+public class ProfileActivity extends AppCompatActivity {
+    private ProfileActivity current;
 
-public class ProfileActivity extends Activity {
-
-
-    public static final String EXTRA_MESSAGE = "com.cse442.friendbuilder.MESSAGE";
-
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.profile);
+        setContentView(R.layout.activity_profile);
 
-        //Intent intent = getIntent();
-       // String message = intent.getStringExtra(LoginActivity.EXTRA_MESSAGE);
-    }
+        current = this;
 
-    public void sendMessage(View view) {
-
-        Intent intent = new Intent(this, NearbyActivity.class);
-        String message = "hi";
-        intent.putExtra(EXTRA_MESSAGE, message);
-        startActivity(intent);
+        Button events = findViewById(R.id.events);
+        events.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent toEventActivity = new Intent(current, EventActivity.class);
+                startActivity(toEventActivity);
+            }
+        });
+        Button nearMe = findViewById(R.id.nearMe);
+        nearMe.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent toNearMeActivity = new Intent(current, NearbyActivity.class);
+                startActivity(toNearMeActivity);
+            }
+        });
     }
 }
+

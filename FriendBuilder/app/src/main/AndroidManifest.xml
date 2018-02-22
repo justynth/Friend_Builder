@@ -23,27 +23,30 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".UserCreation"></activity>
-        <activity android:name=".Message">
-
-        </activity>
-		<activity
+        <activity android:name=".UserCreation" />
+        <activity android:name=".Message" />
+        <activity
             android:name=".NearbyActivity"
-            android:parentActivityName=".LoginActivity" >
-
-        android:parentActivityName=".LoginActivity">
-        <!-- The meta-data tag is required if you support API level 15 and lower -->
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value=".LoginActivity" />
-    </activity>
-	<activity android:name=".ProfileActivity"
+            android:parentActivityName=".LoginActivity">
             android:parentActivityName=".LoginActivity">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".LoginActivity" />
         </activity>
+        <activity
+            android:name=".ProfileActivity"
+            android:parentActivityName=".LoginActivity">
+
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".LoginActivity" />
+        </activity>
+        <activity
+            android:name=".EventActivity"
+            android:label="@string/title_activity_event"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

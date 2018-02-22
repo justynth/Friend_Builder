@@ -10,10 +10,13 @@
         android:id="@+id/scrollView2"
         android:layout_width="352dp"
         android:layout_height="111dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginTop="44dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
 
         <LinearLayout
@@ -25,7 +28,7 @@
                 android:id="@+id/textView4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="-will add messages based off the input box\n-this is scrollable\n-will need to grab messages from database and print them here\n-name button will show the friend profile in another screen"
+                android:text="Alice: input box will add text to a database\nAlice: will need to grab messages from database and print them here\nAlice: this is scrollable\nAlice: clicking the button will show the near by user's profile\nAlice: lorem\nAlice: qwerty\nAlice: lorem"
                 android:textColorLink="@color/colorAccent" />
         </LinearLayout>
     </ScrollView>
@@ -45,7 +48,7 @@
     <EditText
         android:id="@+id/editText"
         android:layout_width="351dp"
-        android:layout_height="143dp"
+        android:layout_height="87dp"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="288dp"
         android:ems="10"
