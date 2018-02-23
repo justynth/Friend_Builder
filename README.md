@@ -8,7 +8,7 @@ Android app to help people who have similar interests connect and chat: Use GPS 
 
 See the App running: 
 
-a)
+a) https://www.youtube.com/watch?v=USB_l3tgsZs&feature=youtu.be
 b) https://media.giphy.com/media/8quBFCLZNa1OgvcOJH/giphy.gif
                      
 Instructions:
