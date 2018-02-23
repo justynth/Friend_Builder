@@ -3,6 +3,7 @@ package com.cse442.friend_builder;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.ActivityChooserView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 class NearbyUserAdapter extends ArrayAdapter<String> {
     private Button b1;
+    private int _position;
     NearbyUserAdapter(Context context, String[] users){
 
         super(context, R.layout.nearbyuserlist, users);
@@ -26,6 +28,7 @@ class NearbyUserAdapter extends ArrayAdapter<String> {
 
     public View getView(int position, View convertView, ViewGroup parent){
         LayoutInflater l = LayoutInflater.from(getContext());
+        _position = position;
         View row = l.inflate(R.layout.nearbyuserlist, parent, false);
 
         String userall = getItem(position);
@@ -47,13 +50,46 @@ class NearbyUserAdapter extends ArrayAdapter<String> {
         i2.setText(user[3]);
         i3.setText(user[4]);
         dis.setText(user[5]);
-        b1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(),Message.class);
-                view.getContext().startActivity(intent);
-            }
-        });
+
+        if (user[0].equals("Bob")) {
+            b1.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(view.getContext(),Message.class);
+                    Bundle name = new Bundle();
+                    name.putString("name", "Bob");
+                    intent.putExtra("name", name);
+                    view.getContext().startActivity(intent);
+                }
+            });
+        }
+        else if (user[0].equals("Jill")) {
+            b1.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(view.getContext(),Message.class);
+                    Bundle name = new Bundle();
+                    name.putString("name", "Jill");
+                    intent.putExtra("name", name);
+                    view.getContext().startActivity(intent);
+                }
+            });
+
+        }
+        else if (user[0].equals("Clyde")) {
+            b1.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(view.getContext(),Message.class);
+                    Bundle name = new Bundle();
+                    name.putString("name", "Clyde");
+                    intent.putExtra("name", name);
+                    view.getContext().startActivity(intent);
+                }
+            });
+        }
+        else {}
+
         return row;
     }
 }
