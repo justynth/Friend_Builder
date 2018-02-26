@@ -4,6 +4,32 @@
 # Project Description:
 Android app to help people who have similar interests connect and chat: Use GPS to locate and match similar interests (alternatively, have the user set up the info themselves and allow them to read the descriptions of other users in the vicinity)
 
+# Running the App in an Emulator:
+
+See the App running: 
+
+a) https://www.youtube.com/watch?v=USB_l3tgsZs&feature=youtu.be
+b) https://media.giphy.com/media/8quBFCLZNa1OgvcOJH/giphy.gif
+                     
+Instructions:
+
+1) Download Android Studio (https://developer.android.com/studio/index.html)
+2) In this Github repo, go to the develop branch.
+3) Click the green "Clone or download" button in the develop branch and download the zip file.
+4) Select the downloaded folder.
+5) Click "Extract all".
+6) For the destination of the files, choose the folder "Android Studio Projects" that was created when you installed Android Studio.
+7) Open Android Studio.
+8) Click File, then click Open.  Find the "Android Studio Projects" folder.  Click "Friend_Builder-develop".  Click the subfolde "FriendBuilder".  And select Okay.
+9) If a message says "Project SDK not defined", click "setup sdk" in the message bar and select version 1.8.
+10) Run the app by clicking the green sideways triangle button or selecting Run -> Run 'app' in the navigation bar.
+11) If you haven't already created an Android emulator, click "Create New Virtual Device". The Nexus 5X should be fine on the default settings.  Then choose to run the app on that new virtual device.
+12) Once the device is running, you should be taken to a login screen.
+13) For this prototype, use "Admin" as the email and "Admin" as the password to login.
+14) Explore the App!
+
+
+
 
 ## MVP (Minimal Feature Set):
 
