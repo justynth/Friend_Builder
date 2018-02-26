@@ -1,0 +1,40 @@
+﻿2/26/18
+10:00am - 11:00am
+All team members present
+
+
+Summary:
+        Discussed next meeting tasks for all members of the group to facilitate the project. Accomplishments from last meeting and the next.
+
+
+Accomplishments since last meeting:
+Wilson: Finished remaining screens (issue #33). Played a little with php and Wampserver. (issue #21)
+Brian: Created YouTube video (#22). Added Read me instructions (#19). Finished Nearby User Screen (#11).
+Justyn: Updated Minutes Branch. Nothing else accomplished. (Out with stomach bug, did play around with Android Studio and learned how to create a profile screen, so I am not lost in the project, but I had no actual contribution to the project)
+Peter: Created Login/Register Screen(issue#10), 
+
+
+Next Meeting Tasks:
+
+
+Wilson: Look up best practices for compatibility across different android devices[a]
+
+
+Brian: Function to get GPS location (#12).  Add way to filter nearby user results with a search radius (#39).  
+
+
+Justyn: Add Color and Font across pages (issue [b]#20). Create/Pick Method/Function to calculate distance based on two gps points (issue #14). Should be simple distance formula. Also create a Developer Documentation Wiki for the project (issue #37).
+
+
+Peter: create a navigation bar and look into database (issues #17 #18)
+
+
+All:
+* UML diagram draft for each activity’s interaction with each other so we can compare next meeting
+* Familiarize with adapters for containers (grid, linear horizontal or vertical)
+
+
+[a]Wilson: Look up best practices for compatibility across different android devices +wzheng23@buffalo.edu
+_Assigned to Wilson Zheng_
+[b]Justyn: Add Color and Font across pages (issue  +justynth@buffalo.edu
+_Assigned to Justyn Thompson_
