@@ -36,8 +36,8 @@ public class Message extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        Intent connector = new Intent(this, LoginActivity.class);
-        startActivity(connector);
+        //Intent connector = new Intent(this, LoginActivity.class);
+        //startActivity(connector);
 
     }
 }

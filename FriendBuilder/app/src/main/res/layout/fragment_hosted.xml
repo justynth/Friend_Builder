@@ -1,0 +1,32 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cse442.friend_builder.Hosted">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/button6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="SSB4 " />
+
+        <Button
+            android:id="@+id/button7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="EVO2020" />
+
+        <Button
+            android:id="@+id/button8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CIRCUS" />
+    </LinearLayout>
+</FrameLayout>
