@@ -1,0 +1,31 @@
+3/5/18
+10:00am - 11:00am
+Present: Peter, Wilson, Brian
+Absent: Justyn??
+
+
+Summary:
+       Prioritize phones over tablets for compatibility.
+Use Google Location Services for GPS features.
+Launch through Google Play.
+Drafted what each screen should look like.
+
+Accomplishments since last meeting:
+Wilson: Looked up what we need to do in android studio to support multiple devices with multiple screens (issue #38). Using dp instead of px for best screen density compatibility (issue #38). Each activity has subfiles that need to be edited for the case of small screens, large screens, or extra large screens. UML diagrams aren’t as useful for us since we have a database to store information but still, the relationship aspect of the model is important. 
+Brian: Looked into differences between Android’s GPS package and Google play’s. (#12)
+Justyn: Absent.
+Peter: Created PHP file for localhost database for login/register screens and implemented with Android. Looking into how to access database globally for testing.(issue#17).
+
+
+Next Meeting Tasks:
+Friday:
+    UML draft and adapters.
+    Draft out what each screen would look like and map colors to it (Login, Register, Profile, Events(host/attend), Events Screen Details, Nearby, Message, Nearby User Profile)
+
+Monday:
+Wilson: Event details #44
+Brian:  Get nearby users and events updated. 
+Peter: Register(issue#45), database(issue#17), relational schema(issue#46).
+Justyn: 
+    
+
