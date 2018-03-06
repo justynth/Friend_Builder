@@ -84,7 +84,7 @@ public class LoginActivity extends AppCompatActivity {
             String data = "";
             int tmp;
             try{
-                URL url = new URL("http://10.84.164.5/android/get_info.php");
+                URL url = new URL("https://c3a28711.ngrok.io/android/get_info.php");
                 String urlParams = "email="+email+"&password="+password;
 
                 HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();

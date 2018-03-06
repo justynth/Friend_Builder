@@ -10,10 +10,9 @@
         android:id="@+id/user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/cpassword"
-        android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/cpassword"
-        android:layout_marginTop="55dp"
+        android:layout_above="@+id/pass"
+        android:layout_alignLeft="@+id/pass"
+        android:layout_alignStart="@+id/pass"
         android:ems="10"
         android:hint="Email"
         android:inputType="textPersonName" />
@@ -22,10 +21,9 @@
         android:id="@+id/pass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/user"
-        android:layout_alignStart="@+id/user"
-        android:layout_below="@+id/user"
-        android:layout_marginTop="28dp"
+        android:layout_above="@+id/cpassword"
+        android:layout_alignLeft="@+id/cpassword"
+        android:layout_alignStart="@+id/cpassword"
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword" />
@@ -34,9 +32,8 @@
         android:id="@+id/cpassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/pass"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="27dp"
+        android:layout_centerVertical="true"
         android:ems="10"
         android:hint="Confirm Password"
         android:inputType="textPassword" />
@@ -45,9 +42,8 @@
         android:id="@+id/register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/cpassword"
+        android:layout_below="@+id/info"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="63dp"
         android:text="Register" />
 
     <TextView
@@ -57,5 +53,17 @@
         android:layout_below="@+id/cpassword"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="19dp" />
+
+    <EditText
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/pass"
+        android:layout_alignLeft="@+id/user"
+        android:layout_alignStart="@+id/user"
+        android:layout_marginBottom="49dp"
+        android:ems="10"
+        android:hint="Name"
+        android:inputType="textPersonName" />
 
 </RelativeLayout>

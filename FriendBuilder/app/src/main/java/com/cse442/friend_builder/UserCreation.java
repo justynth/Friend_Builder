@@ -25,8 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserCreation extends AppCompatActivity {
-    private EditText email,pass,cpass;
-    private Button b1,b2;
+    private EditText email,pass,cpass,name;
+    private Button b1;
     private TextView Info;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +36,8 @@ public class UserCreation extends AppCompatActivity {
         pass=(EditText)findViewById(R.id.pass);
         cpass=(EditText)findViewById(R.id.cpassword);
         b1=(Button)findViewById(R.id.register);
-        b2=(Button)findViewById(R.id.devclear);
+        name = (EditText)findViewById(R.id.name);
+
         Info = (TextView)findViewById(R.id.info);
         b1.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -44,16 +45,12 @@ public class UserCreation extends AppCompatActivity {
                 String s1 = email.getText().toString();
                 String s2 = pass.getText().toString();
                 String s3 = cpass.getText().toString();
-                register(s1,s2,s3);
+                String s4 = name.getText().toString();
+                register(s1,s2,s3,s4);
             }
         });
 
-        b2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                devClear();
-            }
-        });
+
     }
 
     private boolean isPasswordValid(String s){
@@ -73,7 +70,7 @@ public class UserCreation extends AppCompatActivity {
         editor.clear();
         editor.apply();
     }
-    private void register(String userName,String userPassword,String confirmPassword){
+    private void register(String userName,String userPassword,String confirmPassword,String name){
         if(userPassword.equals(confirmPassword)){
             //SharedPreferences shared = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             //String user = shared.getString(userName,"");
@@ -83,7 +80,7 @@ public class UserCreation extends AppCompatActivity {
                 //editor.apply();
                 //Intent intent = new Intent(UserCreation.this, LoginActivity.class);
                 registerPhp register = new registerPhp();
-                register.execute(userName,userPassword);
+                register.execute(name,userName,userPassword);
                 Info.setText("registered!");
                 //startActivity(intent);
             }else{
@@ -108,15 +105,16 @@ public class UserCreation extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            String email = params[0];
-            String password = params[1];
+            String name = params[0];
+            String email = params[1];
+            String password = params[2];
 
             String data="";
             int tmp;
 
             try {
-                URL url = new URL("http://10.84.164.5/android/register_info.php");
-                String urlParams = "name="+""+"&email="+email+"&password="+password;
+                URL url = new URL("https://c3a28711.ngrok.io/android/register_info.php");
+                String urlParams = "name="+name+"&email="+email+"&password="+password;
 
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setDoOutput(true);

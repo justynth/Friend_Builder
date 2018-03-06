@@ -5,15 +5,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class ProfileActivity extends AppCompatActivity {
     private ProfileActivity current;
-
+    private TextView myname;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
+        myname=(TextView)findViewById(R.id.Myname);
+        Intent intent = getIntent();
+        String name = intent.getStringExtra("name");
+        myname.setText(name);
         current = this;
 
         Button events = findViewById(R.id.events);
