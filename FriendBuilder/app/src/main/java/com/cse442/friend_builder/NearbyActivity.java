@@ -66,13 +66,39 @@ public class NearbyActivity extends Activity {
         String provider = LocationManager.GPS_PROVIDER;
         //String provider = LocationManager.NETWORK_PROVIDER;
 
+        String bob = "Undefined";
+        String jill = "Undefined";
+        String clyde = "Undefined";
 
         //Try to find the user's location
 
         try{
             userplace = manager.getLastKnownLocation(provider);
-            loc = Double.toString(userplace.getLatitude());
-            loc = loc + ", " + Double.toString(userplace.getLongitude());
+            loc = String.format("%.2f", userplace.getLatitude());
+            loc = loc + ", " + String.format("%.2f", userplace.getLongitude());
+
+            //Made up people with sample locations, to test the layout
+
+            Location buffalo = new Location(userplace);
+            buffalo.setLatitude(42.88);
+            buffalo.setLongitude(-78.87);
+
+            Location sanfran = new Location(userplace);
+            sanfran.setLatitude(37.77);
+            sanfran.setLongitude(-122.41);
+
+            Location london = new Location(userplace);
+            london.setLatitude(51.51);
+            london.setLongitude(-.12);
+
+            double bobdist = userplace.distanceTo(buffalo) / 1609.34;
+            double jilldist = userplace.distanceTo(sanfran) / 1609.34;
+            double clydedist = userplace.distanceTo(london) / 1609.34;
+
+            bob = String.format("%.2f", bobdist);
+            jill =  String.format("%.2f", jilldist);
+            clyde = String.format("%.2f",clydedist);
+
         }
         catch (NullPointerException n)
         {
@@ -89,27 +115,10 @@ public class NearbyActivity extends Activity {
         Intent intent = getIntent();
         //String message = intent.getStringExtra(ProfileActivity.EXTRA_MESSAGE);
 
-        //Made up people with sample locations, to test the layout
 
-        Location buffalo = new Location(userplace);
-        buffalo.setLatitude(42.88);
-        buffalo.setLongitude(-78.87);
-
-        Location sanfran = new Location(userplace);
-        sanfran.setLatitude(37.77);
-        sanfran.setLongitude(-122.41);
-
-        Location london = new Location(userplace);
-        london.setLatitude(51.51);
-        london.setLongitude(-.12);
-
-        double bobdist = userplace.distanceTo(buffalo) / 1609.34;
-        double jilldist = userplace.distanceTo(sanfran) / 1609.34;
-        double clydedist = userplace.distanceTo(london) / 1609.34;
-
-        String person1 = "Bob, I'm cool, Chess,Soccer,Jesus," + String.format("%.2f", bobdist);
-        String person2 = "Jill,I like stuff,Running,Movies,Cats," + String.format("%.2f", jilldist);
-        String person3 = "Clyde,Meet me!,Counting,Broadway,Sledding," + String.format("%.2f",clydedist);
+        String person1 = "Bob, I'm cool, Chess,Soccer,Jesus," + bob;
+        String person2 = "Jill,I like stuff,Running,Movies,Cats," + jill;
+        String person3 = "Clyde,Meet me!,Counting,Broadway,Sledding," + clyde;
         String[] example = new String[]{person1, person2, person3};
 
 
