@@ -1,0 +1,36 @@
+Team Randos Meeting Minutes
+3/12/2018
+
+Format:  Online, due to illness in the ranks
+
+Present: Justyn, Peter, Brian, Wilson
+Absent:None
+
+Summary:
+      Went over accomplishments since last meeting and next week responsibilities.  Discussed database.
+
+Accomplishments since last meeting:
+Wilson: Created model classes/containers for queried data. #49 Created event details screen that uses bundle class to get queried information from container classes. #44 
+
+Brian: Added GPS functionality to Nearby Users page with Android’s location services.  Added distance between users feature. (#12, #14)  Created individual Help Wanted issue.  Wrote some developer documentation.
+
+Justyn: Added Font resources.
+
+Peter: Fixed Register page (issue#45) to include name and fixed profile to get name when login successful. Using localtunnel as a way to put localhost database online (issue #17) might have connection issues since it is free software but may work with what we need. 
+
+
+
+By Alpha Release:
+
+Need: Youtube video, deploy alpha release, create individual Help Wanted issues, create release from Master
+
+
+
+Monday:
+
+Wilson: Research different messaging databases and incorporate the good ideas into our own. #46
+Brian:  Connect nearby user page to database (#50)
+Peter: relational schema(issue#46), fix algorithm for login and register(issue#51), implement database with other activities and Create tables for what we need. (Issue#52). 
+Justyn: Begin working on hide/ignore feature. Create a Help Wanted Issue.
+
+
