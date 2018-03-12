@@ -113,7 +113,7 @@ public class UserCreation extends AppCompatActivity {
             int tmp;
 
             try {
-                URL url = new URL("https://xzlnurlkbu.localtunnel.me/android/register_info.php");
+                URL url = new URL("https://friendbuilder.localtunnel.me/android/register_info.php");
                 String urlParams = "name="+name+"&email="+email+"&password="+password;
 
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
