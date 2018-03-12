@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText user, pass;
     private Button login;
 
-    String NAME=null,PASSWORD=null,EMAIL=null;
+    String NAME=null,PASSWORD=null,EMAIL=null,ID=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +126,7 @@ public class LoginActivity extends AppCompatActivity {
                 if(!error) {
                     Intent i = new Intent(LoginActivity.this, ProfileActivity.class);
                     // i.putExtra("name",NAME);
+                    i.putExtra("id",ID);
                     i.putExtra("name", NAME);
                     i.putExtra("email", EMAIL);
                     i.putExtra("err", errr);
