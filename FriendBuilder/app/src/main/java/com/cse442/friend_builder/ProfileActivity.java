@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 public class ProfileActivity extends AppCompatActivity {
     private ProfileActivity current;
     private TextView myname;
@@ -15,9 +17,12 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         myname=(TextView)findViewById(R.id.Myname);
+        //useid=(TextView)findViewById(R.id.ident);
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
+        //int userid = intent.getIntExtra("id",1);
         myname.setText(name);
+        //useid.setText(String.valueOf(userid));
         current = this;
 
         Button events = findViewById(R.id.events);

@@ -81,25 +81,27 @@ public class UserCreation extends AppCompatActivity {
                 //Intent intent = new Intent(UserCreation.this, LoginActivity.class);
                 registerPhp register = new registerPhp();
                 register.execute(name,userName,userPassword);
-                Info.setText("registered!");
+                Info.setText("Please Wait while we\nregister your account!");
                 //startActivity(intent);
             }else{
-                Info.setText("Invalid Password");}
+                Info.setText("Invalid Password\nLength to short");}
         }else{
             Info.setText("Password doesn't match");
         }
     }
 
     public void usertaken(){
-        Info.setText("Username has been taken");
+        if(!Info.getText().equals("Server is offline\nTry again later")) {
+            Info.setText("Username has been taken");
+        }
     }
     public void erroroccured(){
-        Info.setText("some took my pancakes");
+        Info.setText("Required parameters (name, email or password) is missing!");
     }
     public void wtf(){
-        Info.setText("the overall happiness has increased");
+        Info.setText("Unknown error occurred in registration!");
     }
-
+    public void regi(){Info.setText("Registered!");}
 
     class registerPhp extends AsyncTask<String, String, String> {
 
@@ -136,6 +138,12 @@ public class UserCreation extends AppCompatActivity {
                 return "Exception: "+e.getMessage();
             } catch (IOException e) {
                 e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Info.setText("Server is offline\nTry again later");
+                    }
+                });
                 return "Exception: "+e.getMessage();
             }
         }
@@ -145,13 +153,17 @@ public class UserCreation extends AppCompatActivity {
             try {
                 JSONObject root = new JSONObject(s);
                 boolean error = root.getBoolean("error");
+                if(!error){
+                    regi();
+                }
                 String msg = root.getString("error_msg");
                 if(msg.equals("Unknown error occurred in registration!")){
                     wtf();
                 }
                 else if(msg.equals("Required parameters (name, email or password) is missing!")){
                     erroroccured();
-                }else{
+                }
+                else{
                     usertaken();
                 }
             } catch (JSONException e) {
