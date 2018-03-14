@@ -11,17 +11,19 @@
         android:id="@+id/descri"
         android:layout_width="311dp"
         android:layout_height="161dp"
+        android:layout_marginBottom="14dp"
         android:ems="10"
         android:inputType="textMultiLine"
-        tools:layout_editor_absoluteX="37dp"
-        tools:layout_editor_absoluteY="16dp" />
+        app:layout_constraintBottom_toTopOf="@+id/done"
+        tools:layout_editor_absoluteX="37dp" />
 
     <Button
         android:id="@+id/done"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
         android:text="Done"
+        app:layout_constraintTop_toBottomOf="@+id/descri"
         tools:layout_editor_absoluteX="148dp"
-        tools:layout_editor_absoluteY="191dp"
         tools:text="Done" />
 </android.support.constraint.ConstraintLayout>
