@@ -1,6 +1,5 @@
 package com.cse442.friend_builder;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
@@ -10,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,8 +19,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 public class UserCreation extends AppCompatActivity {
     private EditText email,pass,cpass,name;
@@ -38,7 +34,7 @@ public class UserCreation extends AppCompatActivity {
         b1=(Button)findViewById(R.id.register);
         name = (EditText)findViewById(R.id.name);
 
-        Info = (TextView)findViewById(R.id.info);
+        Info = (TextView)findViewById(R.id.descri);
         b1.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {

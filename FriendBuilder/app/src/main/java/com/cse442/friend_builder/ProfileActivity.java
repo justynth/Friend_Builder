@@ -22,6 +22,7 @@ import java.net.URL;
 public class ProfileActivity extends AppCompatActivity {
     private ProfileActivity current;
     private TextView myname,usedes;
+
     String DESCRIPTION = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +34,20 @@ public class ProfileActivity extends AppCompatActivity {
         usedes=(TextView)findViewById(R.id.ident);
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
-        int userid = intent.getIntExtra("id",1);
+        final int userid = intent.getIntExtra("id",1);
         myname.setText(name);
         get.execute(String.valueOf(userid));
         //useid.setText(String.valueOf(userid));
         current = this;
-
+        Button desc = findViewById(R.id.desc);
+        desc.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Intent toDesc = new Intent(current, DescActivity.class);
+                toDesc.putExtra("id", userid);
+                startActivity(toDesc);
+            }
+        });
         Button events = findViewById(R.id.events);
         events.setOnClickListener(new View.OnClickListener(){
             @Override
