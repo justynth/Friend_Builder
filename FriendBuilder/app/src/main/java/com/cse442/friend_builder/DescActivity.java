@@ -25,6 +25,7 @@ public class DescActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         final int id = intent.getIntExtra("id",0);
+        final String name = intent.getStringExtra("name");
         setContentView(R.layout.activity_desc);
         des = (TextView)findViewById(R.id.descri);
         Button desc = findViewById(R.id.done);
@@ -35,6 +36,7 @@ public class DescActivity extends AppCompatActivity {
                 update.execute(String.valueOf(id),des.getText().toString());
                 Intent toProfile = new Intent(DescActivity.this, ProfileActivity.class);
                 toProfile.putExtra("id", id);
+                toProfile.putExtra("name",name);
                 startActivity(toProfile);
             }
         });

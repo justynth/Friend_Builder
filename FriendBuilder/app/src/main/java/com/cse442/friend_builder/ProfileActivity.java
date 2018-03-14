@@ -33,7 +33,7 @@ public class ProfileActivity extends AppCompatActivity {
         myname=(TextView)findViewById(R.id.Myname);
         usedes=(TextView)findViewById(R.id.ident);
         Intent intent = getIntent();
-        String name = intent.getStringExtra("name");
+        final String name = intent.getStringExtra("name");
         final int userid = intent.getIntExtra("id",1);
         myname.setText(name);
         get.execute(String.valueOf(userid));
@@ -45,6 +45,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View view){
                 Intent toDesc = new Intent(current, DescActivity.class);
                 toDesc.putExtra("id", userid);
+                toDesc.putExtra("name",name);
                 startActivity(toDesc);
             }
         });
