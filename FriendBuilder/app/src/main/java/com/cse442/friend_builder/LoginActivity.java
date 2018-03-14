@@ -72,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
         l.execute(u,p);
     }
     public void validate() {
-        if(!err.getText().equals("Server is offline\nTry again later")){
+        if(!err.getText().equals("Server is unavailable\nTry again later")){
             err.setText("Email and Password do not match");
         }
         // err.setText(data.getMap().get(u));
@@ -116,7 +116,7 @@ public class LoginActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            err.setText("Server is offline\nTry again later");
+                            err.setText("Server is unavailable\nTry again later");
                         }
                     });
 

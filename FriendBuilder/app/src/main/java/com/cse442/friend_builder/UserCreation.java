@@ -58,7 +58,7 @@ public class UserCreation extends AppCompatActivity {
     }
 
     private boolean isEmailValid(String e){
-        if(e.contains("@")) {
+        if(e.contains("@")&&e.length()>1) {
             return true;
         }
         return false;
@@ -71,28 +71,30 @@ public class UserCreation extends AppCompatActivity {
         editor.apply();
     }
     private void register(String userName,String userPassword,String confirmPassword,String name){
-        if(userPassword.equals(confirmPassword)){
-            //SharedPreferences shared = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            //String user = shared.getString(userName,"");
-            if(isPasswordValid(userPassword)) {
-                //SharedPreferences.Editor editor = shared.edit();
-                //editor.putString(userName, userPassword);
-                //editor.apply();
-                //Intent intent = new Intent(UserCreation.this, LoginActivity.class);
-                registerPhp register = new registerPhp();
-                register.execute(name,userName,userPassword);
-                Info.setText("Please Wait while we\nregister your account!");
-                //startActivity(intent);
-            }else{
-                Info.setText("Invalid Password\nLength to short");}
+        if(name.length()>0) {
+            if (isEmailValid(userName)) {
+                if (userPassword.equals(confirmPassword)) {
+                    if (isPasswordValid(userPassword)) {
+                        registerPhp register = new registerPhp();
+                        register.execute(name, userName, userPassword);
+                        Info.setText("Please Wait while we\nregister your account!");
+                    } else {
+                        Info.setText("Invalid Password\nLength to short");
+                    }
+                } else {
+                    Info.setText("Password doesn't match");
+                }
+            } else {
+                Info.setText("Email isn't valid");
+            }
         }else{
-            Info.setText("Password doesn't match");
+            Info.setText("Please enter a name");
         }
     }
 
     public void usertaken(){
-        if(!Info.getText().equals("Server is offline\nTry again later")) {
-            Info.setText("Username has been taken");
+        if(!Info.getText().equals("Server is unavailable\nTry again later")) {
+            Info.setText("Email has been taken");
         }
     }
     public void erroroccured(){
@@ -141,7 +143,7 @@ public class UserCreation extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Info.setText("Server is offline\nTry again later");
+                        Info.setText("Server is unavailable\nTry again later");
                     }
                 });
                 return "Exception: "+e.getMessage();
