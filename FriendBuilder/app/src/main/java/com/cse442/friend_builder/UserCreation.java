@@ -1,7 +1,7 @@
 package com.cse442.friend_builder;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,11 +10,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class UserCreation extends AppCompatActivity {
-    private EditText email,pass,cpass;
+    private EditText email,pass,cpass,name;
     private Button b1;
     private TextView Info;
     @Override
@@ -25,35 +32,141 @@ public class UserCreation extends AppCompatActivity {
         pass=(EditText)findViewById(R.id.pass);
         cpass=(EditText)findViewById(R.id.cpassword);
         b1=(Button)findViewById(R.id.register);
-        Info = (TextView)findViewById(R.id.info);
+        name = (EditText)findViewById(R.id.name);
+
+        Info = (TextView)findViewById(R.id.descri);
         b1.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 String s1 = email.getText().toString();
                 String s2 = pass.getText().toString();
                 String s3 = cpass.getText().toString();
-                register(s1,s2,s3);
+                String s4 = name.getText().toString();
+                register(s1,s2,s3,s4);
             }
         });
-    }
-
-    private void validate(String userName,String userPassword, String confirmPassword){
 
 
     }
-    private void register(String userName,String userPassword,String confirmPassword){
-        if(userPassword.equals(confirmPassword)){
-            SharedPreferences shared = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-            SharedPreferences.Editor editor = shared.edit();
-            editor.putString(userName,userPassword);
-            editor.apply();
-            Intent intent = new Intent(UserCreation.this,LoginActivity.class);
-            Info.setText("Register Successful");
-            startActivity(intent);
+    private boolean isPasswordValid(String s){
+        return s.length()> 4;
+    }
 
+    private boolean isEmailValid(String e){
+        if(e.contains("@")&&e.length()>1) {
+            return true;
+        }
+        return false;
+    }
+
+    private void devClear(){
+        SharedPreferences shared = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = shared.edit();
+        editor.clear();
+        editor.apply();
+    }
+    private void register(String userName,String userPassword,String confirmPassword,String name){
+        if(name.length()>0) {
+            if (isEmailValid(userName)) {
+                if (userPassword.equals(confirmPassword)) {
+                    if (isPasswordValid(userPassword)) {
+                        registerPhp register = new registerPhp();
+                        register.execute(name, userName, userPassword);
+                        Info.setText("Please Wait while we\nregister your account!");
+                    } else {
+                        Info.setText("Invalid Password\nLength to short");
+                    }
+                } else {
+                    Info.setText("Password doesn't match");
+                }
+            } else {
+                Info.setText("Email isn't valid");
+            }
         }else{
-            Info.setText("Password doesn't match");
+            Info.setText("Please enter a name");
+        }
+    }
+
+    public void usertaken(){
+        if(!Info.getText().equals("Server is unavailable\nTry again later")) {
+            Info.setText("Email has been taken");
+        }
+    }
+    public void erroroccured(){
+        Info.setText("Required parameters (name, email or password) is missing!");
+    }
+    public void wtf(){
+        Info.setText("Unknown error occurred in registration!");
+    }
+    public void regi(){Info.setText("Registered!");}
+
+    class registerPhp extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            String name = params[0];
+            String email = params[1];
+            String password = params[2];
+
+            String data="";
+            int tmp;
+
+            try {
+                URL url = new URL("https://friendbuilder.localtunnel.me/android/register_info.php");
+                String urlParams = "name="+name+"&email="+email+"&password="+password;
+
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setDoOutput(true);
+                OutputStream os = httpURLConnection.getOutputStream();
+                os.write(urlParams.getBytes());
+                os.flush();
+                os.close();
+                InputStream is = httpURLConnection.getInputStream();
+                while((tmp=is.read())!=-1){
+                    data+= (char)tmp;
+                }
+                is.close();
+                httpURLConnection.disconnect();
+
+                return data;
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                return "Exception: "+e.getMessage();
+            } catch (IOException e) {
+                e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Info.setText("Server is unavailable\nTry again later");
+                    }
+                });
+                return "Exception: "+e.getMessage();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            try {
+                JSONObject root = new JSONObject(s);
+                boolean error = root.getBoolean("error");
+                if(!error){
+                    regi();
+                }
+                String msg = root.getString("error_msg");
+                if(msg.equals("Unknown error occurred in registration!")){
+                    wtf();
+                }
+                else if(msg.equals("Required parameters (name, email or password) is missing!")){
+                    erroroccured();
+                }
+                else{
+                    usertaken();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 

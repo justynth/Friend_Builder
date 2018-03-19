@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cse442.friend_builder.DescActivity"
+    tools:layout_editor_absoluteY="81dp">
+
+    <EditText
+        android:id="@+id/descri"
+        android:layout_width="311dp"
+        android:layout_height="161dp"
+        android:layout_marginBottom="14dp"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        app:layout_constraintBottom_toTopOf="@+id/done"
+        tools:layout_editor_absoluteX="37dp" />
+
+    <Button
+        android:id="@+id/done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:text="Done"
+        app:layout_constraintTop_toBottomOf="@+id/descri"
+        tools:layout_editor_absoluteX="148dp"
+        tools:text="Done" />
+</android.support.constraint.ConstraintLayout>
