@@ -157,7 +157,7 @@
             android:layout_height="45dp"
             android:layout_marginBottom="8dp"
             android:ems="10"
-            android:hint="Peter Yang"
+            android:hint="Anon"
             android:inputType="textPersonName"
             android:textColor="#fff"
             android:textSize="17sp"
