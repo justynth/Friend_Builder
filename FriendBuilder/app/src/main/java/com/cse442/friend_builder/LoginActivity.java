@@ -87,38 +87,6 @@ public class LoginActivity extends AppCompatActivity {
         initializeInstanceVariables();
         addAuthListener();
         addButtonListeners();
-        /*findViewById(R.id.events_near_me).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //put a delay on this or something
-                mFirebaseAuth.signOut();
-                context.finish();
-            }
-        });*/
-
-        /*new code end*/
-
-        /*user = (EditText) findViewById(R.id.user);
-        pass = (EditText)findViewById(R.id.pass);
-        login = (Button)findViewById(R.id.login);
-        err = (TextView)findViewById(R.id.err);
-        SignUp = (TextView)findViewById(R.id.SignUp);
-        login.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                String s1 = user.getText().toString();
-                String s2 = pass.getText().toString();
-                validate(s1,s2);
-            }
-        });
-
-        SignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this,UserCreation.class);
-                startActivity(intent);
-            }
-        });*/
     }
 
     private void loadDataForCurrentUser() {
@@ -302,27 +270,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
-    /*private void validate(String u,String p){
-        SharedPreferences shared = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String user = shared.getString(u,"");
-
-        if(u.equals("Admin") && p.equals("Admin")){
-            Intent intent = new Intent(LoginActivity.this,ProfileActivity.class);
-            startActivity(intent);
-        }else if(user.equals(p))
-        {
-            Intent intent = new Intent(LoginActivity.this,ProfileActivity.class);
-            startActivity(intent);
-        }
-        else if(!user.equalsIgnoreCase("")){
-            err.setText("Email and Password do not match");
-        }
-        else{
-            err.setText("Email and Password do not match");
-            // err.setText(data.getMap().get(u));
-        }
-    }*/
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
