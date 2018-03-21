@@ -4,14 +4,11 @@ import java.util.ArrayList;
 
 public class Current extends User {
 
-    public Current(int _id, String _name, ArrayList<Event> _events) {
-        id = _id;
+    public Current(String _email, String _userName, String _name, ArrayList<Event> _events) {
+        email = _email;
+        userName = _userName;
         name = _name;
         events = _events;
     }
-
-    @Override
-    public boolean isCurrent() {
-        return true;
-    }
+    public Current() {}
 }

@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "706213270008",
-    "firebase_url": "https://friendbuilder-6b122.firebaseio.com",
-    "project_id": "friendbuilder-6b122",
-    "storage_bucket": "friendbuilder-6b122.appspot.com"
+    "project_number": "317002803233",
+    "firebase_url": "https://friendbuilder-336e6.firebaseio.com",
+    "project_id": "friendbuilder-336e6",
+    "storage_bucket": "friendbuilder-336e6.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:706213270008:android:1d3167c81fb1789a",
+        "mobilesdk_app_id": "1:317002803233:android:1d3167c81fb1789a",
         "android_client_info": {
           "package_name": "com.cse442.friend_builder"
         }
       },
       "oauth_client": [
         {
-          "client_id": "706213270008-vk6h15kg9sii9lkgousjbtj747fvgg4c.apps.googleusercontent.com",
+          "client_id": "317002803233-ufkj00stbels73080052u3h1cqnk9240.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.cse442.friend_builder",
@@ -23,13 +23,13 @@
           }
         },
         {
-          "client_id": "706213270008-t6uspn682cujdfq6bod6i7g58oegtsrc.apps.googleusercontent.com",
+          "client_id": "317002803233-knsdokfcn5lnru9tnl8dgbn5rsdntv1i.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA8TSKZffrrHp8rIPcwRPp6OZ3YAwmsOz4"
+          "current_key": "AIzaSyC8kyjM14-unqkKGuEdOsn8kW5VmySzBlY"
         }
       ],
       "services": {
@@ -40,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "706213270008-t6uspn682cujdfq6bod6i7g58oegtsrc.apps.googleusercontent.com",
+              "client_id": "317002803233-knsdokfcn5lnru9tnl8dgbn5rsdntv1i.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

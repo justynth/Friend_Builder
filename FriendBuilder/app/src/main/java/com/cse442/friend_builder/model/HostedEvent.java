@@ -19,6 +19,8 @@ public class HostedEvent extends Event {
         active = _active;
     }
 
+    public HostedEvent() {}
+
     @Override
     public boolean isHostedEvent() {
         return true;
