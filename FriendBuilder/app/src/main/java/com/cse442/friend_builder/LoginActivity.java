@@ -280,7 +280,7 @@ public class LoginActivity extends AppCompatActivity {
             }
             else if (resultCode == RESULT_CANCELED) {
                 //Toast.makeText(context, "Cancelled!", Toast.LENGTH_SHORT).show();
-                //mFirebaseAuth.signOut();
+                mFirebaseAuth.signOut();
                 finish();
             }
         }
