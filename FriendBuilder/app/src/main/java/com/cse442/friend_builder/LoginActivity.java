@@ -83,12 +83,11 @@ public class LoginActivity extends AppCompatActivity {
         addAuthListener();
         addButtonListeners();
 
-        /*findViewById(R.id.events_near_me).setOnClickListener(new View.OnClickListener() {
+        /*findViewById(R.id.eventsNearMe).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //put a delay on this or something
-                mFirebaseAuth.signOut();
-                context.finish();
+                startActivity(new Intent(context, EditProfileActivity.class));
             }
         });*/
 
@@ -293,6 +292,7 @@ public class LoginActivity extends AppCompatActivity {
             }
             else if (resultCode == RESULT_CANCELED) {
                 //Toast.makeText(context, "Cancelled!", Toast.LENGTH_SHORT).show();
+                mFirebaseAuth.signOut();
                 finish();
             }
         }
