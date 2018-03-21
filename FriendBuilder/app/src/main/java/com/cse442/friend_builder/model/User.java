@@ -7,6 +7,7 @@ public abstract class User {
     protected String userName;
     protected String name;
     protected ArrayList<Event> events;
+    protected String description;
 
     public String getEmail() {
         return email;
@@ -39,4 +40,8 @@ public abstract class User {
     public void setEvents(ArrayList<Event> events) {
         this.events = events;
     }
+
+    public String getDescription(){ return description;}
+
+    public void setDescription(String description){this.description = description;}
 }

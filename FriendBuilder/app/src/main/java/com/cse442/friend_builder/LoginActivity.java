@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -34,6 +35,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.w3c.dom.Text;
+
 import java.sql.Date;
 import java.sql.Time;
 import java.util.ArrayList;
@@ -62,10 +65,12 @@ public class LoginActivity extends AppCompatActivity {
 
     private TextView description;
     private TextView name;
+    private TextView editname;
     private Button editProfile;
     private Button myEvents;
     private Button usersNearMe;
     private Button eventsNearMe;
+    private TextView editor;
     //login activity, profile activity, login layout, profile layout, gradle files
 
 
@@ -82,12 +87,12 @@ public class LoginActivity extends AppCompatActivity {
         initializeInstanceVariables();
         addAuthListener();
         addButtonListeners();
-
-        /*findViewById(R.id.eventsNearMe).setOnClickListener(new View.OnClickListener() {
+        /*findViewById(R.id.events_near_me).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //put a delay on this or something
-                startActivity(new Intent(context, EditProfileActivity.class));
+                mFirebaseAuth.signOut();
+                context.finish();
             }
         });*/
 
@@ -173,6 +178,8 @@ public class LoginActivity extends AppCompatActivity {
         myEvents = findViewById(R.id.myEvents);
         usersNearMe = findViewById(R.id.usersNearMe);
         eventsNearMe = findViewById(R.id.eventsNearMe);
+        editor = findViewById(R.id.editor);
+        editname = findViewById(R.id.editname);
     }
 
     private void setEverythingVisibleExceptPicAndName() {
@@ -201,17 +208,22 @@ public class LoginActivity extends AppCompatActivity {
 
                     email = user.getEmail();
 
+
+
+
+
                     userReference.child(firebaseUid).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.getValue() == null) {
-                                currentUser = new Current(email, userName, "userChangesLater", new ArrayList<Event>());
+                                currentUser = new Current(email, userName, "userChangesLater", new ArrayList<Event>(),"test");
                                 userReference.child(firebaseUid).setValue(currentUser);
                             }
                             else {
                                 Toast.makeText(context, dataSnapshot.getValue().toString(), Toast.LENGTH_SHORT).show();
                                 currentUser = dataSnapshot.getValue(Current.class);
                                 name.setText(currentUser.getUserName());
+                                description.setText(currentUser.getDescription());
                             }
                         }
 
@@ -251,13 +263,42 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void addButtonListeners() {
-        editProfile.setOnClickListener(new View.OnClickListener() {
+        /*editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ArrayList<Event> temp = new ArrayList<>();
                 temp.add(new HostedEvent(userName, "SSB4", "Competition", null, null, null, false));
                 currentUser = new Current(email, userName, "name", temp);
                 userReference.child(firebaseUid).setValue(currentUser);
+            }
+        });*/
+        editProfile.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                description.setVisibility(View.GONE);
+                name.setVisibility(View.GONE);
+                editor.setVisibility(View.VISIBLE);
+                editname.setVisibility(View.VISIBLE);
+                editname.setText(name.getText().toString());
+                editor.setText(description.getText().toString());
+                editProfile.setText("Save");
+                editProfile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        description.setText(editor.getText().toString());
+                        name.setText(editname.getText().toString());
+                        ArrayList<Event> temp = new ArrayList<>();
+                        temp.add(new HostedEvent(userName, "SSB4", "Competition", null, null, null, false));
+                        currentUser = new Current(email,editname.getText().toString(),"name",temp,editor.getText().toString());
+                        userReference.child(firebaseUid).setValue(currentUser);
+                        editProfile.setText("edit");
+                        description.setVisibility(View.VISIBLE);
+                        name.setVisibility(View.VISIBLE);
+                        editname.setVisibility(View.GONE);
+                        editor.setVisibility(View.GONE);
+                        addButtonListeners();
+                    }
+                });
             }
         });
     }
