@@ -4,11 +4,10 @@ import java.util.ArrayList;
 
 public class Other extends User {
 
-    public Other(String _email, String _userName, String _name, ArrayList<Event> _events) {
+    public Other(String _email, String _name, String des) {
         email = _email;
-        userName = _userName;
         name = _name;
-        events = _events;
+        description = des;
     }
 
 }

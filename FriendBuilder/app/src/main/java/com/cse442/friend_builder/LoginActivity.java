@@ -46,54 +46,35 @@ import java.util.Timer;
 
 public class LoginActivity extends AppCompatActivity {
     /*new code*/
-    private final int minimumUserNameLength = 4;
-    private final int maximumUserNameLength = 9;
-
-    private boolean unAuthToggle;
-    private boolean loggedIn;
-
     private LoginActivity context;
 
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-    private AuthUI authentication;
-    private AuthUI.IdpConfig error = new AuthUI.IdpConfig.EmailBuilder().build();
 
     private FirebaseDatabase database;
     private DatabaseReference userNameReference;
     private DatabaseReference userReference;
-    //private DatabaseReference usedForCurrentToUsersMessages;
-    //private DatabaseReference usedForUsersToCurrentMessages;
 
     private String firebaseUid; //initialized by listener
     private String email; //initialized by listener
     private String name; //initialized by listener
-    private String userName;
     private Current currentUser;
 
     private TextView description;
     private TextView nameView;
+    private TextView editName;
+    private TextView editDescription;
+
     private Button editProfile;
     private Button myEvents;
     private Button usersNearMe;
     private Button eventsNearMe;
 
-    private String decided;
-    private boolean valid;
-    private EditText userNamePrompt;
-    private Button userNameSubmit;
-    private UserNameListener userNameListener;
-    //login activity, profile activity, login layout, profile layout, gradle files
-
-
-    /*private TextView err,SignUp;
-    private EditText user,pass;
-    private Button login;*/
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         editVisuals();
         initializeInstanceVariables();
         addAuthListener();
@@ -105,33 +86,21 @@ public class LoginActivity extends AppCompatActivity {
                 AuthUI.getInstance().signOut(context);
             }
         });
-
-        /*new code end*/
-
-        /*user = (EditText) findViewById(R.id.user);
-        pass = (EditText)findViewById(R.id.pass);
-        login = (Button)findViewById(R.id.login);
-        err = (TextView)findViewById(R.id.err);
-        SignUp = (TextView)findViewById(R.id.SignUp);
-        login.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                String s1 = user.getText().toString();
-                String s2 = pass.getText().toString();
-                validate(s1,s2);
-            }
-        });
-
-        SignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this,UserCreation.class);
-                startActivity(intent);
-            }
-        });*/
     }
 
+    /*new method*/
+    private String removeInvalidKeyCharacters(String key) {
+        //sanitize these characters from email
+        //#$/.
+        StringBuilder answer = new StringBuilder();
+        for (int i = 0; i < key.length(); ++i) {
+            char c = key.charAt(i);
+            if (c != '#' && c != '$' && c != '/' && c != '.')
+                answer.append(c);
+        }
 
+        return answer.toString();
+    }
 
     /*new method*/
     private boolean loggedIn(FirebaseUser user) {
@@ -150,8 +119,6 @@ public class LoginActivity extends AppCompatActivity {
         context = this;
 
         mFirebaseAuth = FirebaseAuth.getInstance();
-        authentication = AuthUI.getInstance();
-        unAuthToggle = true;
 
         database = FirebaseDatabase.getInstance();
         userNameReference = database.getReference().child("UserNames").child("University At Buffalo");
@@ -163,8 +130,8 @@ public class LoginActivity extends AppCompatActivity {
         myEvents = findViewById(R.id.myEvents);
         usersNearMe = findViewById(R.id.usersNearMe);
         eventsNearMe = findViewById(R.id.eventsNearMe);
-        userNamePrompt = findViewById(R.id.userNamePrompt);
-        userNameSubmit = findViewById(R.id.userNameSubmit);
+        editDescription = findViewById(R.id.editDescription);
+        editName = findViewById(R.id.editName);;
     }
 
     private void setEverythingExceptPicAndName(int visibility) {
@@ -175,11 +142,6 @@ public class LoginActivity extends AppCompatActivity {
         myEvents.setVisibility(visibility);
         usersNearMe.setVisibility(visibility);
         eventsNearMe.setVisibility(visibility);
-    }
-
-    private void setUserNameCreation(int visibility) {
-        userNamePrompt.setVisibility(visibility);
-        userNameSubmit.setVisibility(visibility);
     }
 
     /*new method*/
@@ -197,23 +159,24 @@ public class LoginActivity extends AppCompatActivity {
 
                     email = user.getEmail();
 
-                    userNameReference.child(firebaseUid).addValueEventListener(new ValueEventListener() {
+                    userReference.child(removeInvalidKeyCharacters(email)).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             //Toast.makeText(context, ""+(dataSnapshot.exists()), Toast.LENGTH_SHORT).show();
                             if (!dataSnapshot.exists()) {
                                 //need user to sign up username
-                                setEverythingExceptPicAndName(View.INVISIBLE);
-                                setUserNameCreation(View.VISIBLE);
+                                currentUser = new Current(email, name, "JEAHEA");
+                                userReference.child(removeInvalidKeyCharacters(email)).setValue(currentUser);
+
+                                //setUserNameCreation(View.VISIBLE);
                             }
                             else {
-                                userReference.child(dataSnapshot.getValue().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                userReference.child(removeInvalidKeyCharacters(email)).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         currentUser = dataSnapshot.getValue(Current.class);
-                                        userName = null;
-                                        nameView.setText(dataSnapshot.getKey());
-                                        setEverythingExceptPicAndName(View.VISIBLE);
+                                        nameView.setText(currentUser.getName());
+                                        description.setText(currentUser.getDescription());
                                     }
 
                                     @Override
@@ -226,6 +189,7 @@ public class LoginActivity extends AppCompatActivity {
                                 //nameView.setText(dataSnapshot.getKey());
                                 //setEverythingExceptPicAndName(View.VISIBLE); //as they are already visible
                             }
+
                         }
 
                         @Override
@@ -234,21 +198,20 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     });
 
-
-
-
-
-
+                    nameView.setText(name);
+                    setEverythingExceptPicAndName(View.VISIBLE);
                     //loadDataForCurrentUser();
                 }
                 else {
+                    nameView.setText("");
+                    setEverythingExceptPicAndName(View.INVISIBLE);
                     //initializeSignOut();
                     //if (unAuthToggle) {
-                        startActivityForResult(authentication
+                        startActivityForResult(AuthUI.getInstance()
                                 .createSignInIntentBuilder()
                                 .setIsSmartLockEnabled(false)
                                 .setAvailableProviders(Arrays.asList(
-                                        error
+                                        new AuthUI.IdpConfig.EmailBuilder().build()
                                 ))
                                 .build(), 1);
                         //unAuthToggle = !unAuthToggle;
@@ -263,103 +226,36 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void addButtonListeners() {
-        editProfile.setOnClickListener(new View.OnClickListener() {
+        editProfile.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(View v) {
-                ArrayList<Event> temp = new ArrayList<>();
-                temp.add(new HostedEvent(userName, "SSB4", "Competition", null, null, null, false));
-                currentUser = new Current(email, userName, "name", temp);
-                userReference.child(firebaseUid).setValue(currentUser);
-            }
-        });
-        userNameSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                userNameListener = new UserNameListener();
-                valid = true;
-                decided = userNamePrompt.getText().toString();
-                if (decided.length() == 0) {
-                    Toast.makeText(context, "You need a username to continue", Toast.LENGTH_SHORT).show();
-                    valid = false;
-                }
-                else if (decided.length() >= minimumUserNameLength && decided.length() <= maximumUserNameLength){
-                    userReference.addChildEventListener(userNameListener);
-                }
-                else {
-                    Toast.makeText(context, "Usernames need to be at least" + minimumUserNameLength +
-                            "characters and at most" + maximumUserNameLength + "characters", Toast.LENGTH_SHORT).show();
-                    valid = false;
-                }
-                if (valid) {
-                    //check if key is null and if it is, then add
-                    userReference.child(decided).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (!dataSnapshot.exists()) {
-                                currentUser = new Current(email, null, name, new ArrayList<Event>());
-                                userNameReference.child(firebaseUid).setValue(decided);
-                                userReference.child(decided).setValue(currentUser);
-                                setEverythingExceptPicAndName(View.VISIBLE);
-                                setUserNameCreation(View.GONE);
-
-                            }
-                            else {
-                                Toast.makeText(context, userReference.child(decided).getKey().toString(), Toast.LENGTH_SHORT).show();
-                                Toast.makeText(context, "Username already taken", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-
-                    /*andler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            ArrayList<String> existingUserNames = userNameListener.getExistingUserNames();
-                            for (int i = 0; i < existingUserNames.size(); ++i) {
-                                if (existingUserNames.get(i).equals(decided)) {
-                                    Toast.makeText(context, existingUserNames.get(i), Toast.LENGTH_SHORT).show();
-                                    valid = false;
-                                }
-                            }
-
-                            if (valid) {
-                                userName = decided;
-                                currentUser.setUserName(decided);
-                                userReference.child(firebaseUid).setValue(currentUser);
-                                setUserNameCreation(View.GONE);
-                            }
-                        }
-                    }, 5000);*/
-                }
+            public void onClick(View view) {
+                description.setVisibility(View.GONE);
+                nameView.setVisibility(View.GONE);
+                editDescription.setVisibility(View.VISIBLE);
+                editName.setVisibility(View.VISIBLE);
+                editName.setText(nameView.getText().toString());
+                editDescription.setText(description.getText().toString());
+                editProfile.setText("Save");
+                editProfile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        description.setText(editDescription.getText().toString());
+                        nameView.setText(editName.getText().toString());
+                        ArrayList<Event> temp = new ArrayList<>();
+                        //temp.add(new HostedEvent(userName, "SSB4", "Competition", null, null, null, false));
+                        currentUser = new Current(email,editName.getText().toString(), editDescription.getText().toString());
+                        userReference.child(removeInvalidKeyCharacters(email)).setValue(currentUser);
+                        editProfile.setText("edit");
+                        description.setVisibility(View.VISIBLE);
+                        nameView.setVisibility(View.VISIBLE);
+                        editName.setVisibility(View.GONE);
+                        editDescription.setVisibility(View.GONE);
+                        addButtonListeners();
+                    }
+                });
             }
         });
     }
-
-    /*private void validate(String u,String p){
-        SharedPreferences shared = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String user = shared.getString(u,"");
-
-        if(u.equals("Admin") && p.equals("Admin")){
-            Intent intent = new Intent(LoginActivity.this,ProfileActivity.class);
-            startActivity(intent);
-        }else if(user.equals(p))
-        {
-            Intent intent = new Intent(LoginActivity.this,ProfileActivity.class);
-            startActivity(intent);
-        }
-        else if(!user.equalsIgnoreCase("")){
-            err.setText("Email and Password do not match");
-        }
-        else{
-            err.setText("Email and Password do not match");
-            // err.setText(data.getMap().get(u));
-        }
-    }*/
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -375,14 +271,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    /*@Override
-    public void onDestroy() {
-        Toast.makeText(context, "ONDESTROY CALLED", Toast.LENGTH_SHORT).show();
-        mFirebaseAuth.signOut();
-        finish();
-        super.onDestroy();
-    }*/
-
     /*new method*/
     @Override
     public void onResume() {
@@ -397,10 +285,5 @@ public class LoginActivity extends AppCompatActivity {
         if (mAuthStateListener != null)
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
     }
-
-    /*@Override
-    public void onBackPressed() {
-        mFirebaseAuth.signOut();
-        finish();
-    }*/
 }
+
