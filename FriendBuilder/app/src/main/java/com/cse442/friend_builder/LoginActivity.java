@@ -166,8 +166,9 @@ public class LoginActivity extends AppCompatActivity {
                             if (!dataSnapshot.exists()) {
                                 //need user to sign up username
                                 currentUser = new Current(email, name, "JEAHEA");
-                                userReference.child(removeInvalidKeyCharacters(email)).setValue(currentUser);
 
+                                userReference.child(removeInvalidKeyCharacters(email)).setValue(currentUser);
+                                setEverythingExceptPicAndName(View.VISIBLE);
                                 //setUserNameCreation(View.VISIBLE);
                             }
                             else {
@@ -177,6 +178,7 @@ public class LoginActivity extends AppCompatActivity {
                                         currentUser = dataSnapshot.getValue(Current.class);
                                         nameView.setText(currentUser.getName());
                                         description.setText(currentUser.getDescription());
+                                        setEverythingExceptPicAndName(View.VISIBLE);
                                     }
 
                                     @Override
@@ -198,8 +200,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     });
 
-                    nameView.setText(name);
-                    setEverythingExceptPicAndName(View.VISIBLE);
+
                     //loadDataForCurrentUser();
                 }
                 else {
@@ -253,6 +254,14 @@ public class LoginActivity extends AppCompatActivity {
                         addButtonListeners();
                     }
                 });
+            }
+        });
+
+        myEvents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, EventActivity.class);
+                startActivity(intent);
             }
         });
     }
