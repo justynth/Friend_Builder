@@ -22,8 +22,12 @@ import android.widget.Toast;
 import com.cse442.friend_builder.model.Current;
 import com.cse442.friend_builder.model.Event;
 import com.cse442.friend_builder.model.HostedEvent;
+import com.cse442.friend_builder.model.Other;
+import com.cse442.friend_builder.model.listeners.UserNameListener;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -42,6 +46,9 @@ import java.util.Timer;
 
 public class LoginActivity extends AppCompatActivity {
     /*new code*/
+    private final int minimumUserNameLength = 4;
+    private final int maximumUserNameLength = 9;
+
     private boolean unAuthToggle;
     private boolean loggedIn;
 
@@ -49,23 +56,33 @@ public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+    private AuthUI authentication;
+    private AuthUI.IdpConfig error = new AuthUI.IdpConfig.EmailBuilder().build();
 
     private FirebaseDatabase database;
+    private DatabaseReference userNameReference;
     private DatabaseReference userReference;
     //private DatabaseReference usedForCurrentToUsersMessages;
     //private DatabaseReference usedForUsersToCurrentMessages;
 
     private String firebaseUid; //initialized by listener
     private String email; //initialized by listener
-    private String userName; //initialized by listener
+    private String name; //initialized by listener
+    private String userName;
     private Current currentUser;
 
     private TextView description;
-    private TextView name;
+    private TextView nameView;
     private Button editProfile;
     private Button myEvents;
     private Button usersNearMe;
     private Button eventsNearMe;
+
+    private String decided;
+    private boolean valid;
+    private EditText userNamePrompt;
+    private Button userNameSubmit;
+    private UserNameListener userNameListener;
     //login activity, profile activity, login layout, profile layout, gradle files
 
 
@@ -77,19 +94,17 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         editVisuals();
         initializeInstanceVariables();
         addAuthListener();
         addButtonListeners();
 
-        /*findViewById(R.id.eventsNearMe).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.eventsNearMe).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //put a delay on this or something
-                startActivity(new Intent(context, EditProfileActivity.class));
+                AuthUI.getInstance().signOut(context);
             }
-        });*/
+        });
 
         /*new code end*/
 
@@ -116,34 +131,7 @@ public class LoginActivity extends AppCompatActivity {
         });*/
     }
 
-    private void loadDataForCurrentUser() {
-        userReference.child(firebaseUid).equalTo(firebaseUid).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Toast.makeText(context, dataSnapshot.getKey().toString(), Toast.LENGTH_SHORT).show();
-            }
 
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
 
     /*new method*/
     private boolean loggedIn(FirebaseUser user) {
@@ -162,27 +150,36 @@ public class LoginActivity extends AppCompatActivity {
         context = this;
 
         mFirebaseAuth = FirebaseAuth.getInstance();
+        authentication = AuthUI.getInstance();
         unAuthToggle = true;
 
         database = FirebaseDatabase.getInstance();
-        userReference = database.getReference().child("Users").child("University At Buffalo");
+        userNameReference = database.getReference().child("UserNames").child("University At Buffalo");
+        userReference = database.getReference().child("User").child("University At Buffalo");
 
         description = findViewById(R.id.description);
-        name = findViewById(R.id.username);
+        nameView = findViewById(R.id.username);
         editProfile = findViewById(R.id.editProfile);
         myEvents = findViewById(R.id.myEvents);
         usersNearMe = findViewById(R.id.usersNearMe);
         eventsNearMe = findViewById(R.id.eventsNearMe);
+        userNamePrompt = findViewById(R.id.userNamePrompt);
+        userNameSubmit = findViewById(R.id.userNameSubmit);
     }
 
-    private void setEverythingVisibleExceptPicAndName() {
-        findViewById(R.id.descriptionHeader).setVisibility(View.VISIBLE);
-        description.setVisibility(View.VISIBLE);
-        name.setVisibility(View.VISIBLE);
-        editProfile.setVisibility(View.VISIBLE);
-        myEvents.setVisibility(View.VISIBLE);
-        usersNearMe.setVisibility(View.VISIBLE);
-        eventsNearMe.setVisibility(View.VISIBLE);
+    private void setEverythingExceptPicAndName(int visibility) {
+        findViewById(R.id.descriptionHeader).setVisibility(visibility);
+        description.setVisibility(visibility);
+        nameView.setVisibility(visibility);
+        editProfile.setVisibility(visibility);
+        myEvents.setVisibility(visibility);
+        usersNearMe.setVisibility(visibility);
+        eventsNearMe.setVisibility(visibility);
+    }
+
+    private void setUserNameCreation(int visibility) {
+        userNamePrompt.setVisibility(visibility);
+        userNameSubmit.setVisibility(visibility);
     }
 
     /*new method*/
@@ -193,25 +190,41 @@ public class LoginActivity extends AppCompatActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 //Toast.makeText(context, "Called", Toast.LENGTH_SHORT).show();
                 if (loggedIn(user)) {
-                    setEverythingVisibleExceptPicAndName(); //as they are already visible
-
+                    //initializeSignIn();
                     firebaseUid = user.getUid();
 
-                    userName = user.getDisplayName();
+                    name = user.getDisplayName();
 
                     email = user.getEmail();
 
-                    userReference.child(firebaseUid).addValueEventListener(new ValueEventListener() {
+                    userNameReference.child(firebaseUid).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.getValue() == null) {
-                                currentUser = new Current(email, userName, "userChangesLater", new ArrayList<Event>());
-                                userReference.child(firebaseUid).setValue(currentUser);
+                            //Toast.makeText(context, ""+(dataSnapshot.exists()), Toast.LENGTH_SHORT).show();
+                            if (!dataSnapshot.exists()) {
+                                //need user to sign up username
+                                setEverythingExceptPicAndName(View.INVISIBLE);
+                                setUserNameCreation(View.VISIBLE);
                             }
                             else {
-                                Toast.makeText(context, dataSnapshot.getValue().toString(), Toast.LENGTH_SHORT).show();
-                                currentUser = dataSnapshot.getValue(Current.class);
-                                name.setText(currentUser.getUserName());
+                                userReference.child(dataSnapshot.getValue().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        currentUser = dataSnapshot.getValue(Current.class);
+                                        userName = null;
+                                        nameView.setText(dataSnapshot.getKey());
+                                        setEverythingExceptPicAndName(View.VISIBLE);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+                                //currentUser = dataSnapshot.getValue(Current.class);
+                                //userName = null;
+                                //nameView.setText(dataSnapshot.getKey());
+                                //setEverythingExceptPicAndName(View.VISIBLE); //as they are already visible
                             }
                         }
 
@@ -225,29 +238,28 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
+
                     //loadDataForCurrentUser();
                 }
                 else {
-                    if (unAuthToggle) {
-                        startActivityForResult(AuthUI.getInstance()
+                    //initializeSignOut();
+                    //if (unAuthToggle) {
+                        startActivityForResult(authentication
                                 .createSignInIntentBuilder()
                                 .setIsSmartLockEnabled(false)
                                 .setAvailableProviders(Arrays.asList(
-                                        new AuthUI.IdpConfig.EmailBuilder().build()
+                                        error
                                 ))
                                 .build(), 1);
-                        unAuthToggle = !unAuthToggle;
+                        //unAuthToggle = !unAuthToggle;
                         //ask for GPS permissions
-                    }
+                    //}
                 }
 
                 //finish();
 
             }
         };
-
-        //add the listener to the auth object
-        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
 
     private void addButtonListeners() {
@@ -258,6 +270,72 @@ public class LoginActivity extends AppCompatActivity {
                 temp.add(new HostedEvent(userName, "SSB4", "Competition", null, null, null, false));
                 currentUser = new Current(email, userName, "name", temp);
                 userReference.child(firebaseUid).setValue(currentUser);
+            }
+        });
+        userNameSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userNameListener = new UserNameListener();
+                valid = true;
+                decided = userNamePrompt.getText().toString();
+                if (decided.length() == 0) {
+                    Toast.makeText(context, "You need a username to continue", Toast.LENGTH_SHORT).show();
+                    valid = false;
+                }
+                else if (decided.length() >= minimumUserNameLength && decided.length() <= maximumUserNameLength){
+                    userReference.addChildEventListener(userNameListener);
+                }
+                else {
+                    Toast.makeText(context, "Usernames need to be at least" + minimumUserNameLength +
+                            "characters and at most" + maximumUserNameLength + "characters", Toast.LENGTH_SHORT).show();
+                    valid = false;
+                }
+                if (valid) {
+                    //check if key is null and if it is, then add
+                    userReference.child(decided).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (!dataSnapshot.exists()) {
+                                currentUser = new Current(email, null, name, new ArrayList<Event>());
+                                userNameReference.child(firebaseUid).setValue(decided);
+                                userReference.child(decided).setValue(currentUser);
+                                setEverythingExceptPicAndName(View.VISIBLE);
+                                setUserNameCreation(View.GONE);
+
+                            }
+                            else {
+                                Toast.makeText(context, userReference.child(decided).getKey().toString(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "Username already taken", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    /*andler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            ArrayList<String> existingUserNames = userNameListener.getExistingUserNames();
+                            for (int i = 0; i < existingUserNames.size(); ++i) {
+                                if (existingUserNames.get(i).equals(decided)) {
+                                    Toast.makeText(context, existingUserNames.get(i), Toast.LENGTH_SHORT).show();
+                                    valid = false;
+                                }
+                            }
+
+                            if (valid) {
+                                userName = decided;
+                                currentUser.setUserName(decided);
+                                userReference.child(firebaseUid).setValue(currentUser);
+                                setUserNameCreation(View.GONE);
+                            }
+                        }
+                    }, 5000);*/
+                }
             }
         });
     }
@@ -292,24 +370,23 @@ public class LoginActivity extends AppCompatActivity {
             }
             else if (resultCode == RESULT_CANCELED) {
                 //Toast.makeText(context, "Cancelled!", Toast.LENGTH_SHORT).show();
-                mFirebaseAuth.signOut();
                 finish();
             }
         }
     }
 
-    @Override
+    /*@Override
     public void onDestroy() {
-        super.onDestroy();
+        Toast.makeText(context, "ONDESTROY CALLED", Toast.LENGTH_SHORT).show();
         mFirebaseAuth.signOut();
         finish();
-    }
+        super.onDestroy();
+    }*/
 
     /*new method*/
     @Override
     public void onResume() {
         super.onResume();
-        //Toast.makeText(context, "THIS IS A RESUME!", Toast.LENGTH_SHORT).show();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
 
@@ -317,13 +394,13 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        //Toast.makeText(context, "THIS IS AN ON PAUSE", Toast.LENGTH_SHORT).show();
-        mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+        if (mAuthStateListener != null)
+            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
     }
 
-    @Override
+    /*@Override
     public void onBackPressed() {
         mFirebaseAuth.signOut();
         finish();
-    }
+    }*/
 }
