@@ -21,8 +21,8 @@ class NearbyUserAdapter extends ArrayAdapter<String> {
     private Button b1;
     private int _position;
     NearbyUserAdapter(Context context, String[] users){
-
         super(context, R.layout.nearbyuserlist, users);
+
     }
 
 
@@ -34,7 +34,7 @@ class NearbyUserAdapter extends ArrayAdapter<String> {
         String userall = getItem(position);
         //String[] user = new String[] {userall};
         String[] user = userall.split(",");
-
+        //String myName = intent.getExtras().get("myName").toString();
 
         TextView u = (TextView) row.findViewById(R.id.username);
         TextView d = (TextView) row.findViewById(R.id.description);
@@ -43,40 +43,46 @@ class NearbyUserAdapter extends ArrayAdapter<String> {
         TextView i3 = (TextView) row.findViewById(R.id.interest3);
         TextView dis = (TextView) row.findViewById(R.id.distance);
         Button b1 = (Button) row.findViewById(R.id.button2);
+        final String myName = user[0];
+        u.setText(user[1]);
+        d.setText(user[2]);
+        i1.setText(user[3]);
+        i2.setText(user[4]);
+        i3.setText(user[5]);
+        dis.setText(user[6]);
 
-        u.setText(user[0]);
-        d.setText(user[1]);
-        i1.setText(user[2]);
-        i2.setText(user[3]);
-        i3.setText(user[4]);
-        dis.setText(user[5]);
-
-        if (user[0].equals("Bob")) {
+        if (user[1].equals("Admin")) {
             b1.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(view.getContext(),Message.class);
                     Bundle name = new Bundle();
-                    name.putString("name", "Bob");
+
+                    name.putString("name", "Admin");
                     intent.putExtra("name", name);
+                    intent.putExtra("uid","11Ij7TeD1hanouC2BauXl1qCwsY2");
+                    intent.putExtra("myName",myName);
                     view.getContext().startActivity(intent);
                 }
             });
         }
-        else if (user[0].equals("Jill")) {
+        else if (user[1].equals("Peter")) {
             b1.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(view.getContext(),Message.class);
                     Bundle name = new Bundle();
-                    name.putString("name", "Jill");
+
+                    name.putString("name", "Peter");
                     intent.putExtra("name", name);
+                    intent.putExtra("uid","B6oz8sKqhof98FXa3nlkVgIvJen2");
+                    intent.putExtra("myName",myName);
                     view.getContext().startActivity(intent);
                 }
             });
 
         }
-        else if (user[0].equals("Clyde")) {
+        else if (user[1].equals("Clyde")) {
             b1.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view) {

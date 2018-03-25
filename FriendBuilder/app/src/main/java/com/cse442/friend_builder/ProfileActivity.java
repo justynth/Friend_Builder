@@ -26,7 +26,6 @@ public class ProfileActivity extends AppCompatActivity {
     private String userName;
     private String displayName;
     private String email;
-    private String description;
 
     private FirebaseDatabase database;
     private DatabaseReference currentData;
@@ -129,7 +128,7 @@ public class ProfileActivity extends AppCompatActivity {
         //Intent intent = new Intent(context, EditProfileActivity.class);
         //intent.putExtras(getIdentityBundle());
         //startActivity(intent);
-        currentData.child(uid).setValue(new Current(email, userName, displayName, null,description));
+        //currentData.child(uid).setValue(new Current(email, userName, displayName, null));
     }
     public Bundle getIdentityBundle() {
         return null;

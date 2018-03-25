@@ -4,9 +4,7 @@ import java.util.ArrayList;
 
 public abstract class User {
     protected String email;
-    protected String userName;
     protected String name;
-    protected ArrayList<Event> events;
     protected String description;
 
     public String getEmail() {
@@ -17,14 +15,6 @@ public abstract class User {
         this.email = email;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
     public String getName() {
         return name;
     }
@@ -33,15 +23,8 @@ public abstract class User {
         this.name = name;
     }
 
-    public ArrayList<Event> getEvents() {
-        return events;
-    }
+    public String getDescription() { return description; }
 
-    public void setEvents(ArrayList<Event> events) {
-        this.events = events;
-    }
+    public void setDescription(String description) { this.description = description; }
 
-    public String getDescription(){ return description;}
-
-    public void setDescription(String description){this.description = description;}
 }

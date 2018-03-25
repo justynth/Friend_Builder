@@ -15,14 +15,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "317002803233-imoq6voqd6r2dag1ot67mnrs4p661aos.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.cse442.friend_builder",
-            "certificate_hash": "058f427c1ce21b6a29e412b866a56ab6d91c7af4"
-          }
-        },
-        {
           "client_id": "317002803233-ufkj00stbels73080052u3h1cqnk9240.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
