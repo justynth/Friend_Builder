@@ -17,6 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class EventActivity extends AppCompatActivity {
@@ -56,14 +58,14 @@ public class EventActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
 
     }
 
@@ -84,6 +86,10 @@ public class EventActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            LinearLayout hostedEventsList = findViewById(R.id.hostedEventsList);
+            LinearLayout attendedEventsList = findViewById(R.id.attendedEventsList);
+            hostedEventsList.addView(new Button(this));
+            attendedEventsList.addView(new Button(this));
             return true;
         }
 

@@ -128,7 +128,7 @@ public class ProfileActivity extends AppCompatActivity {
         //Intent intent = new Intent(context, EditProfileActivity.class);
         //intent.putExtras(getIdentityBundle());
         //startActivity(intent);
-        currentData.child(uid).setValue(new Current(email, userName, displayName, null));
+        //currentData.child(uid).setValue(new Current(email, userName, displayName, null));
     }
     public Bundle getIdentityBundle() {
         return null;

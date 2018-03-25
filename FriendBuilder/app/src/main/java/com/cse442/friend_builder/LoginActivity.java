@@ -22,8 +22,12 @@ import android.widget.Toast;
 import com.cse442.friend_builder.model.Current;
 import com.cse442.friend_builder.model.Event;
 import com.cse442.friend_builder.model.HostedEvent;
+import com.cse442.friend_builder.model.Other;
+import com.cse442.friend_builder.model.listeners.UserNameListener;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -42,36 +46,29 @@ import java.util.Timer;
 
 public class LoginActivity extends AppCompatActivity {
     /*new code*/
-    private boolean unAuthToggle;
-    private boolean loggedIn;
-
     private LoginActivity context;
 
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     private FirebaseDatabase database;
+    private DatabaseReference userNameReference;
     private DatabaseReference userReference;
-    //private DatabaseReference usedForCurrentToUsersMessages;
-    //private DatabaseReference usedForUsersToCurrentMessages;
 
     private String firebaseUid; //initialized by listener
     private String email; //initialized by listener
-    private String userName; //initialized by listener
+    private String name; //initialized by listener
     private Current currentUser;
 
     private TextView description;
-    private TextView name;
+    private TextView nameView;
+    private TextView editName;
+    private TextView editDescription;
+
     private Button editProfile;
     private Button myEvents;
     private Button usersNearMe;
     private Button eventsNearMe;
-    //login activity, profile activity, login layout, profile layout, gradle files
-
-
-    /*private TextView err,SignUp;
-    private EditText user,pass;
-    private Button login;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,66 +80,26 @@ public class LoginActivity extends AppCompatActivity {
         addAuthListener();
         addButtonListeners();
 
-        /*findViewById(R.id.eventsNearMe).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.eventsNearMe).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //put a delay on this or something
-                startActivity(new Intent(context, EditProfileActivity.class));
-            }
-        });*/
-
-        /*new code end*/
-
-        /*user = (EditText) findViewById(R.id.user);
-        pass = (EditText)findViewById(R.id.pass);
-        login = (Button)findViewById(R.id.login);
-        err = (TextView)findViewById(R.id.err);
-        SignUp = (TextView)findViewById(R.id.SignUp);
-        login.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                String s1 = user.getText().toString();
-                String s2 = pass.getText().toString();
-                validate(s1,s2);
+                AuthUI.getInstance().signOut(context);
             }
         });
-
-        SignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this,UserCreation.class);
-                startActivity(intent);
-            }
-        });*/
     }
 
-    private void loadDataForCurrentUser() {
-        userReference.child(firebaseUid).equalTo(firebaseUid).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Toast.makeText(context, dataSnapshot.getKey().toString(), Toast.LENGTH_SHORT).show();
-            }
+    /*new method*/
+    private String removeInvalidKeyCharacters(String key) {
+        //sanitize these characters from email
+        //#$/.
+        StringBuilder answer = new StringBuilder();
+        for (int i = 0; i < key.length(); ++i) {
+            char c = key.charAt(i);
+            if (c != '#' && c != '$' && c != '/' && c != '.')
+                answer.append(c);
+        }
 
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        return answer.toString();
     }
 
     /*new method*/
@@ -162,27 +119,29 @@ public class LoginActivity extends AppCompatActivity {
         context = this;
 
         mFirebaseAuth = FirebaseAuth.getInstance();
-        unAuthToggle = true;
 
         database = FirebaseDatabase.getInstance();
-        userReference = database.getReference().child("Users").child("University At Buffalo");
+        userNameReference = database.getReference().child("UserNames").child("University At Buffalo");
+        userReference = database.getReference().child("User").child("University At Buffalo");
 
         description = findViewById(R.id.description);
-        name = findViewById(R.id.username);
+        nameView = findViewById(R.id.username);
         editProfile = findViewById(R.id.editProfile);
         myEvents = findViewById(R.id.myEvents);
         usersNearMe = findViewById(R.id.usersNearMe);
         eventsNearMe = findViewById(R.id.eventsNearMe);
+        editDescription = findViewById(R.id.editDescription);
+        editName = findViewById(R.id.editName);;
     }
 
-    private void setEverythingVisibleExceptPicAndName() {
-        findViewById(R.id.descriptionHeader).setVisibility(View.VISIBLE);
-        description.setVisibility(View.VISIBLE);
-        name.setVisibility(View.VISIBLE);
-        editProfile.setVisibility(View.VISIBLE);
-        myEvents.setVisibility(View.VISIBLE);
-        usersNearMe.setVisibility(View.VISIBLE);
-        eventsNearMe.setVisibility(View.VISIBLE);
+    private void setEverythingExceptPicAndName(int visibility) {
+        findViewById(R.id.descriptionHeader).setVisibility(visibility);
+        description.setVisibility(visibility);
+        nameView.setVisibility(visibility);
+        editProfile.setVisibility(visibility);
+        myEvents.setVisibility(visibility);
+        usersNearMe.setVisibility(visibility);
+        eventsNearMe.setVisibility(visibility);
     }
 
     /*new method*/
@@ -193,26 +152,46 @@ public class LoginActivity extends AppCompatActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 //Toast.makeText(context, "Called", Toast.LENGTH_SHORT).show();
                 if (loggedIn(user)) {
-                    setEverythingVisibleExceptPicAndName(); //as they are already visible
-
+                    //initializeSignIn();
                     firebaseUid = user.getUid();
 
-                    userName = user.getDisplayName();
+                    name = user.getDisplayName();
 
                     email = user.getEmail();
 
-                    userReference.child(firebaseUid).addValueEventListener(new ValueEventListener() {
+                    userReference.child(removeInvalidKeyCharacters(email)).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.getValue() == null) {
-                                currentUser = new Current(email, userName, "userChangesLater", new ArrayList<Event>());
-                                userReference.child(firebaseUid).setValue(currentUser);
+                            //Toast.makeText(context, ""+(dataSnapshot.exists()), Toast.LENGTH_SHORT).show();
+                            if (!dataSnapshot.exists()) {
+                                //need user to sign up username
+                                currentUser = new Current(email, name, "JEAHEA");
+
+                                userReference.child(removeInvalidKeyCharacters(email)).setValue(currentUser);
+                                setEverythingExceptPicAndName(View.VISIBLE);
+                                //setUserNameCreation(View.VISIBLE);
                             }
                             else {
-                                Toast.makeText(context, dataSnapshot.getValue().toString(), Toast.LENGTH_SHORT).show();
-                                currentUser = dataSnapshot.getValue(Current.class);
-                                name.setText(currentUser.getUserName());
+                                userReference.child(removeInvalidKeyCharacters(email)).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        currentUser = dataSnapshot.getValue(Current.class);
+                                        nameView.setText(currentUser.getName());
+                                        description.setText(currentUser.getDescription());
+                                        setEverythingExceptPicAndName(View.VISIBLE);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+                                //currentUser = dataSnapshot.getValue(Current.class);
+                                //userName = null;
+                                //nameView.setText(dataSnapshot.getKey());
+                                //setEverythingExceptPicAndName(View.VISIBLE); //as they are already visible
                             }
+
                         }
 
                         @Override
@@ -222,13 +201,13 @@ public class LoginActivity extends AppCompatActivity {
                     });
 
 
-
-
-
                     //loadDataForCurrentUser();
                 }
                 else {
-                    if (unAuthToggle) {
+                    nameView.setText("");
+                    setEverythingExceptPicAndName(View.INVISIBLE);
+                    //initializeSignOut();
+                    //if (unAuthToggle) {
                         startActivityForResult(AuthUI.getInstance()
                                 .createSignInIntentBuilder()
                                 .setIsSmartLockEnabled(false)
@@ -236,52 +215,56 @@ public class LoginActivity extends AppCompatActivity {
                                         new AuthUI.IdpConfig.EmailBuilder().build()
                                 ))
                                 .build(), 1);
-                        unAuthToggle = !unAuthToggle;
+                        //unAuthToggle = !unAuthToggle;
                         //ask for GPS permissions
-                    }
+                    //}
                 }
 
                 //finish();
 
             }
         };
-
-        //add the listener to the auth object
-        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
 
     private void addButtonListeners() {
-        editProfile.setOnClickListener(new View.OnClickListener() {
+        editProfile.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                description.setVisibility(View.GONE);
+                nameView.setVisibility(View.GONE);
+                editDescription.setVisibility(View.VISIBLE);
+                editName.setVisibility(View.VISIBLE);
+                editName.setText(nameView.getText().toString());
+                editDescription.setText(description.getText().toString());
+                editProfile.setText("Save");
+                editProfile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        description.setText(editDescription.getText().toString());
+                        nameView.setText(editName.getText().toString());
+                        ArrayList<Event> temp = new ArrayList<>();
+                        //temp.add(new HostedEvent(userName, "SSB4", "Competition", null, null, null, false));
+                        currentUser = new Current(email,editName.getText().toString(), editDescription.getText().toString());
+                        userReference.child(removeInvalidKeyCharacters(email)).setValue(currentUser);
+                        editProfile.setText("edit");
+                        description.setVisibility(View.VISIBLE);
+                        nameView.setVisibility(View.VISIBLE);
+                        editName.setVisibility(View.GONE);
+                        editDescription.setVisibility(View.GONE);
+                        addButtonListeners();
+                    }
+                });
+            }
+        });
+
+        myEvents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<Event> temp = new ArrayList<>();
-                temp.add(new HostedEvent(userName, "SSB4", "Competition", null, null, null, false));
-                currentUser = new Current(email, userName, "name", temp);
-                userReference.child(firebaseUid).setValue(currentUser);
+                Intent intent = new Intent(context, EventActivity.class);
+                startActivity(intent);
             }
         });
     }
-
-    /*private void validate(String u,String p){
-        SharedPreferences shared = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String user = shared.getString(u,"");
-
-        if(u.equals("Admin") && p.equals("Admin")){
-            Intent intent = new Intent(LoginActivity.this,ProfileActivity.class);
-            startActivity(intent);
-        }else if(user.equals(p))
-        {
-            Intent intent = new Intent(LoginActivity.this,ProfileActivity.class);
-            startActivity(intent);
-        }
-        else if(!user.equalsIgnoreCase("")){
-            err.setText("Email and Password do not match");
-        }
-        else{
-            err.setText("Email and Password do not match");
-            // err.setText(data.getMap().get(u));
-        }
-    }*/
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -292,24 +275,15 @@ public class LoginActivity extends AppCompatActivity {
             }
             else if (resultCode == RESULT_CANCELED) {
                 //Toast.makeText(context, "Cancelled!", Toast.LENGTH_SHORT).show();
-                mFirebaseAuth.signOut();
                 finish();
             }
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mFirebaseAuth.signOut();
-        finish();
     }
 
     /*new method*/
     @Override
     public void onResume() {
         super.onResume();
-        //Toast.makeText(context, "THIS IS A RESUME!", Toast.LENGTH_SHORT).show();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
 
@@ -317,13 +291,8 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        //Toast.makeText(context, "THIS IS AN ON PAUSE", Toast.LENGTH_SHORT).show();
-        mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
-    }
-
-    @Override
-    public void onBackPressed() {
-        mFirebaseAuth.signOut();
-        finish();
+        if (mAuthStateListener != null)
+            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
     }
 }
+
