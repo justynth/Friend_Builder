@@ -1,8 +1,8 @@
 package com.cse442.friend_builder;
 
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -18,8 +18,29 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.cse442.friend_builder.model.Event;
+import com.cse442.friend_builder.model.HostedEvent;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
+
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TimeZone;
 
 public class EventActivity extends AppCompatActivity {
 
@@ -37,14 +58,125 @@ public class EventActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private static EventActivity context;
+
+    private static LinearLayout hostedEventsList;
+    private static LinearLayout attendedEventsList;
+    private EditText eventName;
+    private EditText eventTheme;
+    private Button submit;
+    private View dialogView;
+    private AlertDialog dialog;
+
+    private Hosted hosted;
+    private Attended attended;
+
+    private FirebaseDatabase database;
+    private DatabaseReference eventReference;
+
+    private String email;
+
+    private void initializeInstanceVariables() {
+        context = this;
+
+        email = getIntent().getBundleExtra("user").getString("user");
+
+        database = FirebaseDatabase.getInstance();
+        eventReference = database.getReference().child("Events").child("University At Buffalo");
+
+        dialogView = getLayoutInflater().inflate(R.layout.dialog_create_event, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setView(dialogView);
+        dialog = alertDialogBuilder.create();
+
+        hosted = new Hosted();
+        attended = new Attended();
+
+        eventName = dialogView.findViewById(R.id.eventName);
+        eventTheme = dialogView.findViewById(R.id.eventTheme);
+        submit = dialogView.findViewById(R.id.submit);
+
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                HostedEvent hostedEvent = new HostedEvent(
+                        email, eventName.getText().toString(), eventTheme.getText().toString(), null, null, null, true
+                );
+
+                Map map = new HashMap();
+                map.put("time", ServerValue.TIMESTAMP);
+                map.put("event", hostedEvent);
+
+                eventReference.child(removeInvalidKeyCharacters(email)).push().setValue(map);
+
+                dialog.hide();
+            }
+        });
+    }
+
+    /*new method*/
+    private String removeInvalidKeyCharacters(String key) {
+        //sanitize these characters from email
+        //#$/.
+        StringBuilder answer = new StringBuilder();
+        for (int i = 0; i < key.length(); ++i) {
+            char c = key.charAt(i);
+            if (c != '#' && c != '$' && c != '/' && c != '.')
+                answer.append(c);
+        }
+
+        return answer.toString();
+    }
+
+    private void addEventListener() {
+        //this belong somewhere else that reads from the database
+                eventReference.child(removeInvalidKeyCharacters(email)).addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        Button temp = new Button(context);
+                        Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
+                        HostedEvent hE = it.next().getValue(HostedEvent.class);
+                        Toast.makeText(context, ""+it.next().getValue().toString(), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(context, ""+dataSnapshot.getChildren().iterator().next().getValue().toString(), Toast.LENGTH_SHORT).show();
+                        //HostedEvent hE = (HostedEvent) m.get("event");
+                        temp.setText(hE.getName());
+                        hosted.hostedEventsList.addView(temp);
+                    }
+
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+
+
+
+
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -66,7 +198,26 @@ public class EventActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });*/
+        editVisuals();
+        initializeInstanceVariables() ;
+        addEventListener();
 
+
+
+    }
+
+    public void editVisuals() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitle("Events");
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, LoginActivity.class));
+                finish();
+            }
+        });
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
 
@@ -86,10 +237,8 @@ public class EventActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            LinearLayout hostedEventsList = findViewById(R.id.hostedEventsList);
-            LinearLayout attendedEventsList = findViewById(R.id.attendedEventsList);
-            hostedEventsList.addView(new Button(this));
-            attendedEventsList.addView(new Button(this));
+            dialog.show();
+
             return true;
         }
 
@@ -127,6 +276,11 @@ public class EventActivity extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.fragment_event, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+
+
+
+
+
             return rootView;
         }
     }
@@ -139,12 +293,14 @@ public class EventActivity extends AppCompatActivity {
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
+
+
         }
 
         @Override
         public Fragment getItem(int position) {
-            if (position == 0) return new Hosted();
-            else if (position == 1) return new Attended();
+            if (position == 0) return hosted;
+            else if (position == 1) return attended;
 
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
@@ -153,7 +309,6 @@ public class EventActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
             return 2;
         }
     }

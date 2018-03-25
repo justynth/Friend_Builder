@@ -52,7 +52,6 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     private FirebaseDatabase database;
-    private DatabaseReference userNameReference;
     private DatabaseReference userReference;
 
     private String firebaseUid; //initialized by listener
@@ -121,7 +120,6 @@ public class LoginActivity extends AppCompatActivity {
         mFirebaseAuth = FirebaseAuth.getInstance();
 
         database = FirebaseDatabase.getInstance();
-        userNameReference = database.getReference().child("UserNames").child("University At Buffalo");
         userReference = database.getReference().child("User").child("University At Buffalo");
 
         description = findViewById(R.id.description);
@@ -165,7 +163,7 @@ public class LoginActivity extends AppCompatActivity {
                             //Toast.makeText(context, ""+(dataSnapshot.exists()), Toast.LENGTH_SHORT).show();
                             if (!dataSnapshot.exists()) {
                                 //need user to sign up username
-                                currentUser = new Current(email, name, "JEAHEA");
+                                currentUser = new Current(email, name, "JEAHEA", 5, 3);
 
                                 userReference.child(removeInvalidKeyCharacters(email)).setValue(currentUser);
                                 setEverythingExceptPicAndName(View.VISIBLE);
@@ -244,7 +242,7 @@ public class LoginActivity extends AppCompatActivity {
                         nameView.setText(editName.getText().toString());
                         ArrayList<Event> temp = new ArrayList<>();
                         //temp.add(new HostedEvent(userName, "SSB4", "Competition", null, null, null, false));
-                        currentUser = new Current(email,editName.getText().toString(), editDescription.getText().toString());
+                        currentUser = new Current(email,editName.getText().toString(), editDescription.getText().toString(), 3, 5);
                         userReference.child(removeInvalidKeyCharacters(email)).setValue(currentUser);
                         editProfile.setText("edit");
                         description.setVisibility(View.VISIBLE);
@@ -261,7 +259,22 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, EventActivity.class);
+
+                Bundle bundle = new Bundle();
+                bundle.putString("user", email);
+
+                intent.putExtra("user", bundle);
+
                 startActivity(intent);
+                finish();
+            }
+        });
+        
+         usersNearMe.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view) {
+                Intent toNearMeActivity = new Intent(context, NearbyActivity.class);
+                startActivity(toNearMeActivity);
+                finish();
             }
         });
     }

@@ -9,6 +9,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -16,15 +17,18 @@ import android.location.LocationManager;
 import android.location.Location;
 import android.widget.TextView;
 
-public class NearbyActivity extends Activity {
+public class NearbyActivity extends AppCompatActivity {
 
     private TextView place;
     private Location userplace;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nearby);
+
+        getSupportActionBar().setTitle("Nearby Users");
 
         // Acquire a reference to the system Location Manager
         LocationManager manager = (LocationManager) this.getSystemService(this.LOCATION_SERVICE);
@@ -125,6 +129,17 @@ public class NearbyActivity extends Activity {
         ListAdapter l = new NearbyUserAdapter(this, example);
         ListView userlistview = (ListView) findViewById(R.id.userlistview);
         userlistview.setAdapter(l);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
+                break;
+        }
+        return true;
     }
 
 }
