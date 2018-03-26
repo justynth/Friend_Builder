@@ -4,12 +4,13 @@ import java.util.ArrayList;
 
 public class Current extends User {
 
-    public Current(String _email, String _name, String _description, double _lat, double _lon) {
+    public Current(String _email, String _name, String _description, double longitude, double latitude) {
         email = _email;
         name = _name;
         description = _description;
-        lat = _lat;
-        lon = _lon;
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
+
     public Current() {}
 }
