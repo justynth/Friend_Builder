@@ -60,7 +60,7 @@ class NearbyUserAdapter extends ArrayAdapter<String> {
 
                     name.putString("name", "Admin");
                     intent.putExtra("name", name);
-                    intent.putExtra("uid","11Ij7TeD1hanouC2BauXl1qCwsY2");
+                    intent.putExtra("email","admin@gmailcom");
                     intent.putExtra("myName",myName);
                     view.getContext().startActivity(intent);
                 }
@@ -75,7 +75,7 @@ class NearbyUserAdapter extends ArrayAdapter<String> {
 
                     name.putString("name", "Peter");
                     intent.putExtra("name", name);
-                    intent.putExtra("uid","B6oz8sKqhof98FXa3nlkVgIvJen2");
+                    intent.putExtra("email","pyang@buffaloedu");
                     intent.putExtra("myName",myName);
                     view.getContext().startActivity(intent);
                 }

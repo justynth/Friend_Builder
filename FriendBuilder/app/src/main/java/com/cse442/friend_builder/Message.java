@@ -57,12 +57,13 @@ public class Message extends AppCompatActivity implements View.OnClickListener {
         rootR = FirebaseDatabase.getInstance().getReference();
 
         mAuth = FirebaseAuth.getInstance();
-        sender = mAuth.getCurrentUser().getUid();
+        sender = removeInvalidKeyCharacters(mAuth.getCurrentUser().getEmail());
+        
         Button accessFriendProfile = findViewById(R.id.accessFriend);
         accessFriendProfile.setOnClickListener(this);
         Intent connector = getIntent();
         Bundle savedNames = connector.getBundleExtra("name");
-        reciever = connector.getExtras().get("uid").toString();
+        reciever = connector.getExtras().get("email").toString();
         final String myName = connector.getExtras().get("myName").toString();
         if(savedNames != null) {
             accessFriendProfile.setText(savedNames.getString("name"));
@@ -169,5 +170,15 @@ public class Message extends AppCompatActivity implements View.OnClickListener {
         //Intent connector = new Intent(this, LoginActivity.class);
         //startActivity(connector);
 
+    }
+
+    private String removeInvalidKeyCharacters(String key) {
+        StringBuilder answer = new StringBuilder();
+        for (int i = 0; i < key.length(); ++i) {
+            char c = key.charAt(i);
+            if (c != '#' && c != '$' && c != '/' && c != '.')
+                answer.append(c);
+        }
+        return answer.toString();
     }
 }
