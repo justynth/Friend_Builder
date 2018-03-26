@@ -6,8 +6,8 @@ public abstract class User {
     protected String email;
     protected String name;
     protected String description;
-    protected long longitude;
-    protected long latitude;
+    protected double longitude;
+    protected double latitude;
 
 
     public String getEmail() {
@@ -30,19 +30,19 @@ public abstract class User {
 
     public void setDescription(String description) { this.description = description; }
 
-    public long getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(long longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
-    public long getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(long latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 

@@ -1,48 +1,32 @@
 package com.cse442.friend_builder;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Handler;
-import android.preference.PreferenceManager;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cse442.friend_builder.model.Current;
 import com.cse442.friend_builder.model.Event;
-import com.cse442.friend_builder.model.HostedEvent;
-import com.cse442.friend_builder.model.Other;
-import com.cse442.friend_builder.model.listeners.UserNameListener;
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.sql.Date;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Timer;
 
 public class LoginActivity extends AppCompatActivity {
     /*new code*/
@@ -69,8 +53,18 @@ public class LoginActivity extends AppCompatActivity {
     private Button usersNearMe;
     private Button eventsNearMe;
 
+    private Location userplace;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    1);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -147,7 +141,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
+                final FirebaseUser user = firebaseAuth.getCurrentUser();
                 //Toast.makeText(context, "Called", Toast.LENGTH_SHORT).show();
                 if (loggedIn(user)) {
                     //initializeSignIn();
@@ -163,7 +157,56 @@ public class LoginActivity extends AppCompatActivity {
                             //Toast.makeText(context, ""+(dataSnapshot.exists()), Toast.LENGTH_SHORT).show();
                             if (!dataSnapshot.exists()) {
                                 //need user to sign up username
-                                currentUser = new Current(email, name, "JEAHEA", 5, 3);
+                                LocationManager manager = (LocationManager) context.getSystemService(context.LOCATION_SERVICE);
+                                String provider = LocationManager.GPS_PROVIDER;
+
+
+                                // Define a listener that responds to location updates
+                                LocationListener listener = new LocationListener() {
+                                    public void onLocationChanged(Location location) {
+                                        // Called when a new location is found by the network location provider.
+                                        userplace = location;
+                                    }
+
+                                    public void onStatusChanged(String provider, int status, Bundle extras) {
+                                    }
+
+                                    public void onProviderEnabled(String provider) {
+                                    }
+
+                                    public void onProviderDisabled(String provider) {
+                                    }
+                                };
+
+                                String loc = "";
+
+                                try {
+                                    if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                        // TODO: Consider calling
+                                        //    ActivityCompat#requestPermissions
+                                        // here to request the missing permissions, and then overriding
+                                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                        //                                          int[] grantResults)
+                                        // to handle the case where the user grants the permission. See the documentation
+                                        // for ActivityCompat#requestPermissions for more details.
+                                        return;
+                                    }
+                                    manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
+                                }
+                                catch(NullPointerException e)
+                                {
+                                    loc = "Searching...";
+                                }
+
+                                try{
+                                    userplace = manager.getLastKnownLocation(provider);
+                                }
+                                catch (NullPointerException n)
+                                {
+                                    loc = "Not Found";
+                                }
+
+                                currentUser = new Current(email, name, "JEAHEA", userplace.getLongitude(), userplace.getLatitude());
 
                                 userReference.child(removeInvalidKeyCharacters(email)).setValue(currentUser);
                                 setEverythingExceptPicAndName(View.VISIBLE);

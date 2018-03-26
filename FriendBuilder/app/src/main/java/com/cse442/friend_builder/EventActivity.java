@@ -25,6 +25,8 @@ import android.widget.Toast;
 
 import com.cse442.friend_builder.model.Event;
 import com.cse442.friend_builder.model.HostedEvent;
+import com.cse442.friend_builder.model.listeners.ButtonEventListener;
+import com.cse442.friend_builder.model.listeners.EndButtonListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -66,6 +68,8 @@ public class EventActivity extends AppCompatActivity {
     private EditText eventTheme;
     private Button submit;
     private View dialogView;
+    private View dialogEventDetails;
+    private AlertDialog eventDetails;
     private AlertDialog dialog;
 
     private Hosted hosted;
@@ -84,10 +88,14 @@ public class EventActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         eventReference = database.getReference().child("Events").child("University At Buffalo");
 
-        dialogView = getLayoutInflater().inflate(R.layout.dialog_create_event, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        dialogView = getLayoutInflater().inflate(R.layout.dialog_create_event, null);
         alertDialogBuilder.setView(dialogView);
         dialog = alertDialogBuilder.create();
+
+        dialogEventDetails = getLayoutInflater().inflate(R.layout.event_details, null);
+        alertDialogBuilder.setView(dialogEventDetails);
+        eventDetails = alertDialogBuilder.create();
 
         hosted = new Hosted();
         attended = new Attended();
@@ -129,24 +137,107 @@ public class EventActivity extends AppCompatActivity {
         return answer.toString();
     }
 
+
+
     private void addEventListener() {
         //this belong somewhere else that reads from the database
                 eventReference.child(removeInvalidKeyCharacters(email)).addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        Button temp = new Button(context);
-                        Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
-                        HostedEvent hE = it.next().getValue(HostedEvent.class);
-                        Toast.makeText(context, ""+it.next().getValue().toString(), Toast.LENGTH_SHORT).show();
-                        //Toast.makeText(context, ""+dataSnapshot.getChildren().iterator().next().getValue().toString(), Toast.LENGTH_SHORT).show();
-                        //HostedEvent hE = (HostedEvent) m.get("event");
-                        temp.setText(hE.getName());
-                        hosted.hostedEventsList.addView(temp);
+                        if (dataSnapshot.getKey().equals("timeEnd")) {}
+                        else {
+                            Button temp = new Button(context);
+                            Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
+                            HostedEvent hE = it.next().getValue(HostedEvent.class);
+                            //Toast.makeText(context, ""+it.next().getValue().toString(), Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(context, ""+dataSnapshot.getChildren().iterator().next().getValue().toString(), Toast.LENGTH_SHORT).show();
+                            //HostedEvent hE = (HostedEvent) m.get("event");
+                            String key = dataSnapshot.getKey();
+                            temp.setText(hE.getName());
+                            ButtonEventListener bEL =  new ButtonEventListener((long)it.next().getValue(), hE, key) { //get this bEL and set different hostedEvent
+                                @Override
+                                public void onClick(View v) {
+                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                    sdf.setTimeZone(TimeZone.getTimeZone("America/New_York"));
+
+                                    String[] dateTime = sdf.format(new Date(timeStamp)).split(" ");
+
+                                    TextView hostName = dialogEventDetails.findViewById(R.id.hostName);
+                                    hostName.setText("Host: " + email);
+                                    TextView eventName = dialogEventDetails.findViewById(R.id.eventName);
+                                    eventName.setText("Event Name: " + hostedEvent.getName());
+                                    TextView eventTheme = dialogEventDetails.findViewById(R.id.eventTheme);
+                                    eventTheme.setText("Event Theme: " + hostedEvent.getTheme());
+                                    TextView date = dialogEventDetails.findViewById(R.id.date);
+                                    date.setText("Date Begin: " + dateTime[0]);
+                                    TextView timeBegin = dialogEventDetails.findViewById(R.id.timeBegin);
+                                    timeBegin.setText("Time Begin: " + dateTime[1]);
+                                    TextView timeEnd = dialogEventDetails.findViewById(R.id.timeEnd);
+                                    if (hostedEvent.getEnd() != null)
+                                        timeEnd.setText("Time End: " + hostedEvent.getEnd());
+                                    else timeEnd.setText("");
+                                    TextView active = dialogEventDetails.findViewById(R.id.active);
+                                    if (hostedEvent.isActive()) active.setText("Active");
+                                    else active.setText("Inactive");
+
+
+                                    Button end = dialogEventDetails.findViewById(R.id.endEvent);
+                                    EndButtonListener eBL = new EndButtonListener(hostedEvent, timeStamp) {
+                                        @Override
+                                        public void onClick(View v) {
+                                            Map map = new HashMap();
+                                            map.put("timeEnd", ServerValue.TIMESTAMP);
+                                            eventReference.child(removeInvalidKeyCharacters(email)).child("timeEnd").setValue(map);
+
+                                            eventReference.child(removeInvalidKeyCharacters(email)).child("timeEnd").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    Map map = (HashMap) dataSnapshot.getValue();
+
+                                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                                    sdf.setTimeZone(TimeZone.getTimeZone("America/New_York"));
+                                                    endTime = sdf.format(new Date((long)map.get("timeEnd")));
+                                                    Map m = new HashMap();
+                                                    hostedEvent = new HostedEvent(hostedEvent.getHostName(), hostedEvent.getName(),
+                                                            hostedEvent.getTheme(), null, null, endTime, false);
+                                                    m.put("event", hostedEvent);
+                                                    m.put("time", startTime);
+
+                                                    eventReference.child(removeInvalidKeyCharacters(email)).child(key).setValue(m);
+                                                }
+
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+
+                                                }
+                                            });
+
+                                        }
+                                    };
+                                    end.setOnClickListener(eBL);
+                                    eventDetails.show();
+                                }
+                            };
+                            temp.setOnClickListener(bEL);
+                            hosted.hostedEventsList.addView(temp);
+                        }
+
                     }
 
                     @Override
                     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                        Toast.makeText(EventActivity.this, ""+dataSnapshot.getValue().toString(), Toast.LENGTH_SHORT).show();
+                        if (!dataSnapshot.getKey().equals("timeEnd")) {
 
+                        }
+                        /*HostedEvent hostedEvent = (HostedEvent) dataSnapshot.getValue();
+                        TextView timeEnd = dialogEventDetails.findViewById(R.id.timeEnd);
+                        if (hostedEvent.getEnd() != null)
+                            timeEnd.setText("Time End: " + hostedEvent.getEnd());
+                        else timeEnd.setText("");
+                        TextView active = dialogEventDetails.findViewById(R.id.active);
+                        if (hostedEvent.isActive()) active.setText("Active");
+                        else active.setText("Inactive");*/
                     }
 
                     @Override
