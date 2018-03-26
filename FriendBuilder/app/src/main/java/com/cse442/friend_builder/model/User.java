@@ -6,6 +6,18 @@ public abstract class User {
     protected String email;
     protected String name;
     protected String description;
+    protected double lat;
+    protected double lon;
+
+    public double getLat() {return lat;}
+    public double getLon() {return lon;}
+    public void setLat(double l){
+        this.lat = l;
+    }
+    public void setLon(double l){
+        this.lon = l;
+    }
+
 
     public String getEmail() {
         return email;
