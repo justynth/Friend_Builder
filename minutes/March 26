@@ -1,0 +1,32 @@
+Team Randos Meeting Minutes
+3/26/2018
+
+Present: Peter, Brian, Wilson
+Absent: Justyn
+
+Summary:
+     Went over what to do before we submit on Wednesday. Peter is going to help Brian on his part. Wilson is going to do the non-coding alpha release parts.
+
+Accomplishments since last meeting:
+Wilson: Switched over to firebase API and worked with the login/logout and NoSQL data structure (#55, #46 and #49). Added a Help Wanted issue.
+
+Brian: Watched Firebase videos.  Reconnected Nearby User page to login page.
+
+Justyn: ???
+
+Peter:Worked on Chat functionality change using UID. (issue#61) added a help wanted issue. Added the ability to change name and description (issue#63)
+
+By Alpha Release:
+	Wilson: Top 3 interests for profile screen. Edit edit button. Finish organizing Events code. Add Firebase documentation. Youtube video.
+
+Peter: change UID to email instead , help Brian with nearby user list. 
+
+Brian: Send GPS coordinates to Firebase.  In Nearby User list, pull people from Firebase.  Move permission request and initial locator to profile page.
+
+
+Monday:
+
+Wilson: Write helpful comments for better readability (#64)
+Brian:  Work on sorting Nearby Users by interest/location (#65).
+Peter: fix chat to use UID(issue#61)
+Justyn:
