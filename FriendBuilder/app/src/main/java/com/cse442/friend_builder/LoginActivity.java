@@ -1,12 +1,19 @@
 package com.cse442.friend_builder;
 
+import android.*;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -70,8 +77,18 @@ public class LoginActivity extends AppCompatActivity {
     private Button usersNearMe;
     private Button eventsNearMe;
 
+    private Location userplace;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    1);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -131,7 +148,8 @@ public class LoginActivity extends AppCompatActivity {
         usersNearMe = findViewById(R.id.usersNearMe);
         eventsNearMe = findViewById(R.id.eventsNearMe);
         editDescription = findViewById(R.id.editDescription);
-        editName = findViewById(R.id.editName);;
+        editName = findViewById(R.id.editName);
+        ;
     }
 
     private void setEverythingExceptPicAndName(int visibility) {
@@ -165,13 +183,64 @@ public class LoginActivity extends AppCompatActivity {
                             //Toast.makeText(context, ""+(dataSnapshot.exists()), Toast.LENGTH_SHORT).show();
                             if (!dataSnapshot.exists()) {
                                 //need user to sign up username
-                                currentUser = new Current(email, name, "JEAHEA");
+
+
+
+                                LocationManager manager = (LocationManager) context.getSystemService(context.LOCATION_SERVICE);
+                                String provider = LocationManager.GPS_PROVIDER;
+
+
+                                // Define a listener that responds to location updates
+                                LocationListener listener = new LocationListener() {
+                                    public void onLocationChanged(Location location) {
+                                        // Called when a new location is found by the network location provider.
+                                        userplace = location;
+                                    }
+
+                                    public void onStatusChanged(String provider, int status, Bundle extras) {
+                                    }
+
+                                    public void onProviderEnabled(String provider) {
+                                    }
+
+                                    public void onProviderDisabled(String provider) {
+                                    }
+                                };
+
+                                String loc = "";
+
+                                try {
+                                    if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                        // TODO: Consider calling
+                                        //    ActivityCompat#requestPermissions
+                                        // here to request the missing permissions, and then overriding
+                                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                        //                                          int[] grantResults)
+                                        // to handle the case where the user grants the permission. See the documentation
+                                        // for ActivityCompat#requestPermissions for more details.
+                                        return;
+                                    }
+                                    manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
+                                }
+                                catch(NullPointerException e)
+                                {
+                                    loc = "Searching...";
+                                }
+
+                                try{
+                                    userplace = manager.getLastKnownLocation(provider);
+                                }
+                                catch (NullPointerException n)
+                                {
+                                    loc = "Not Found";
+                                }
+
+                                currentUser = new Current(email, name, "I have not customized my profile yet.", userplace.getLatitude(), userplace.getLongitude());
 
                                 userReference.child(removeInvalidKeyCharacters(email)).setValue(currentUser);
                                 setEverythingExceptPicAndName(View.VISIBLE);
                                 //setUserNameCreation(View.VISIBLE);
-                            }
-                            else {
+                            } else {
                                 userReference.child(removeInvalidKeyCharacters(email)).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -202,21 +271,20 @@ public class LoginActivity extends AppCompatActivity {
 
 
                     //loadDataForCurrentUser();
-                }
-                else {
+                } else {
                     nameView.setText("");
                     setEverythingExceptPicAndName(View.INVISIBLE);
                     //initializeSignOut();
                     //if (unAuthToggle) {
-                        startActivityForResult(AuthUI.getInstance()
-                                .createSignInIntentBuilder()
-                                .setIsSmartLockEnabled(false)
-                                .setAvailableProviders(Arrays.asList(
-                                        new AuthUI.IdpConfig.EmailBuilder().build()
-                                ))
-                                .build(), 1);
-                        //unAuthToggle = !unAuthToggle;
-                        //ask for GPS permissions
+                    startActivityForResult(AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setIsSmartLockEnabled(false)
+                            .setAvailableProviders(Arrays.asList(
+                                    new AuthUI.IdpConfig.EmailBuilder().build()
+                            ))
+                            .build(), 1);
+                    //unAuthToggle = !unAuthToggle;
+                    //ask for GPS permissions
                     //}
                 }
 
@@ -227,7 +295,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void addButtonListeners() {
-        editProfile.setOnClickListener(new View.OnClickListener(){
+        editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 description.setVisibility(View.GONE);
@@ -244,7 +312,57 @@ public class LoginActivity extends AppCompatActivity {
                         nameView.setText(editName.getText().toString());
                         ArrayList<Event> temp = new ArrayList<>();
                         //temp.add(new HostedEvent(userName, "SSB4", "Competition", null, null, null, false));
-                        currentUser = new Current(email,editName.getText().toString(), editDescription.getText().toString());
+
+                        LocationManager manager = (LocationManager) context.getSystemService(context.LOCATION_SERVICE);
+                        String provider = LocationManager.GPS_PROVIDER;
+
+
+                        // Define a listener that responds to location updates
+                        LocationListener listener = new LocationListener() {
+                            public void onLocationChanged(Location location) {
+                                // Called when a new location is found by the network location provider.
+                                userplace = location;
+                            }
+
+                            public void onStatusChanged(String provider, int status, Bundle extras) {
+                            }
+
+                            public void onProviderEnabled(String provider) {
+                            }
+
+                            public void onProviderDisabled(String provider) {
+                            }
+                        };
+
+                        String loc = "";
+
+                        try {
+                            if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                // TODO: Consider calling
+                                //    ActivityCompat#requestPermissions
+                                // here to request the missing permissions, and then overriding
+                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                //                                          int[] grantResults)
+                                // to handle the case where the user grants the permission. See the documentation
+                                // for ActivityCompat#requestPermissions for more details.
+                                return;
+                            }
+                            manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
+                        }
+                        catch(NullPointerException e)
+                        {
+                            loc = "Searching...";
+                        }
+
+                        try{
+                            userplace = manager.getLastKnownLocation(provider);
+                        }
+                        catch (NullPointerException n)
+                        {
+                            loc = "Not Found";
+                        }
+
+                        currentUser = new Current(email,editName.getText().toString(), editDescription.getText().toString(), userplace.getLatitude(), userplace.getLongitude());
                         userReference.child(removeInvalidKeyCharacters(email)).setValue(currentUser);
                         editProfile.setText("edit");
                         description.setVisibility(View.VISIBLE);
