@@ -58,7 +58,7 @@ public class Message extends AppCompatActivity implements View.OnClickListener {
 
         mAuth = FirebaseAuth.getInstance();
         sender = removeInvalidKeyCharacters(mAuth.getCurrentUser().getEmail());
-        
+
         Button accessFriendProfile = findViewById(R.id.accessFriend);
         accessFriendProfile.setOnClickListener(this);
         Intent connector = getIntent();

@@ -33,7 +33,7 @@ class NearbyUserAdapter extends ArrayAdapter<String> {
 
         String userall = getItem(position);
         //String[] user = new String[] {userall};
-        String[] user = userall.split(",");
+        final String[] user = userall.split(",");
         //String myName = intent.getExtras().get("myName").toString();
 
         TextView u = (TextView) row.findViewById(R.id.username);
@@ -58,7 +58,7 @@ class NearbyUserAdapter extends ArrayAdapter<String> {
                     Intent intent = new Intent(view.getContext(),Message.class);
                     Bundle name = new Bundle();
 
-                    name.putString("name", "Admin");
+                    name.putString("name", user[1]);
                     intent.putExtra("name", name);
                     intent.putExtra("email","admin@gmailcom");
                     intent.putExtra("myName",myName);
@@ -73,7 +73,7 @@ class NearbyUserAdapter extends ArrayAdapter<String> {
                     Intent intent = new Intent(view.getContext(),Message.class);
                     Bundle name = new Bundle();
 
-                    name.putString("name", "Peter");
+                    name.putString("name", user[1]);
                     intent.putExtra("name", name);
                     intent.putExtra("email","pyang@buffaloedu");
                     intent.putExtra("myName",myName);
@@ -82,13 +82,15 @@ class NearbyUserAdapter extends ArrayAdapter<String> {
             });
 
         }
-        else if (user[1].equals("Clyde")) {
+        else if (user[1].equals("Brian")) {
             b1.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(view.getContext(),Message.class);
                     Bundle name = new Bundle();
-                    name.putString("name", "Clyde");
+                    name.putString("name", user[1]);
+                    intent.putExtra("email","briantac@buffaloedu");
+                    intent.putExtra("myName",myName);
                     intent.putExtra("name", name);
                     view.getContext().startActivity(intent);
                 }
