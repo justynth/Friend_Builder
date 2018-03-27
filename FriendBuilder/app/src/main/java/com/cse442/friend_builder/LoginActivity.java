@@ -428,6 +428,7 @@ public class LoginActivity extends AppCompatActivity {
                 bundle.putString("user", email);
 
                 intent.putExtra("user", bundle);
+                bundle.putString("name", currentUser.getName());
 
                 startActivity(intent);
                 finish();
