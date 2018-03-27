@@ -8,8 +8,8 @@ public class Current extends User {
         email = _email;
         name = _name;
         description = _description;
-        lat = _lat;
-        lon = _lon;
+        latitude = _lat;
+        longitude = _lon;
     }
     public Current() {}
 }

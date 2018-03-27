@@ -7,9 +7,9 @@ public class Event {
     protected String hostName;
     protected String name;
     protected String theme;
-    protected Date date;
-    protected Time begin;
-    protected Time end;
+    protected String date;
+    protected String begin;
+    protected String end;
     protected boolean active;
 
     public String getHostName() {
@@ -36,27 +36,27 @@ public class Event {
         this.theme = theme;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
-    public Time getBegin() {
+    public String getBegin() {
         return begin;
     }
 
-    public void setBegin(Time begin) {
+    public void setBegin(String begin) {
         this.begin = begin;
     }
 
-    public Time getEnd() {
+    public String getEnd() {
         return end;
     }
 
-    public void setEnd(Time end) {
+    public void setEnd(String end) {
         this.end = end;
     }
 
@@ -66,10 +66,6 @@ public class Event {
 
     public void setActive(boolean active) {
         this.active = active;
-    }
-
-    public boolean isHostedEvent() {
-        return false;
     }
 
 }

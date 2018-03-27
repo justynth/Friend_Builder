@@ -382,10 +382,11 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        
-         usersNearMe.setOnClickListener(new View.OnClickListener(){
+
+        usersNearMe.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view) {
                 Intent toNearMeActivity = new Intent(context, NearbyActivity.class);
+                toNearMeActivity.putExtra("myName",nameView.getText().toString());
                 startActivity(toNearMeActivity);
             }
         });

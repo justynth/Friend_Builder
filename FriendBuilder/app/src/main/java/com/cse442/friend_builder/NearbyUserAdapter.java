@@ -33,7 +33,7 @@ class NearbyUserAdapter extends ArrayAdapter<String> {
 
         String userall = getItem(position);
         //String[] user = new String[] {userall};
-        String[] user = userall.split(",");
+        final String[] user = userall.split(",");
 
 
         TextView u = (TextView) row.findViewById(R.id.username);
@@ -44,52 +44,27 @@ class NearbyUserAdapter extends ArrayAdapter<String> {
         TextView dis = (TextView) row.findViewById(R.id.distance);
         Button b1 = (Button) row.findViewById(R.id.button2);
 
-        u.setText(user[0]);
-        d.setText(user[1]);
-        i1.setText(user[2]);
-        i2.setText(user[3]);
-        i3.setText(user[4]);
-        dis.setText(user[5]);
+        final String myName = user[0];
+        u.setText(user[1]);
+        d.setText(user[2]);
+        i1.setText(user[3]);
+        i2.setText(user[4]);
+        i3.setText(user[5]);
+        dis.setText(user[6]);
+        final String email = user[7];
 
-        if (user[0].equals("Bob")) {
-            b1.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(view.getContext(),Message.class);
-                    Bundle name = new Bundle();
-                    name.putString("name", "Bob");
-                    intent.putExtra("name", name);
-                    view.getContext().startActivity(intent);
-                }
-            });
-        }
-        else if (user[0].equals("Jill")) {
-            b1.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(view.getContext(),Message.class);
-                    Bundle name = new Bundle();
-                    name.putString("name", "Jill");
-                    intent.putExtra("name", name);
-                    view.getContext().startActivity(intent);
-                }
-            });
-
-        }
-        else if (user[0].equals("Clyde")) {
-            b1.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(view.getContext(),Message.class);
-                    Bundle name = new Bundle();
-                    name.putString("name", "Clyde");
-                    intent.putExtra("name", name);
-                    view.getContext().startActivity(intent);
-                }
-            });
-        }
-        else {}
-
+        b1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(),Message.class);
+                Bundle name = new Bundle();
+                name.putString("name", user[1]);
+                intent.putExtra("name", name);
+                intent.putExtra("email",email);
+                intent.putExtra("myName",myName);
+                view.getContext().startActivity(intent);
+            }
+        });
         return row;
     }
 }
