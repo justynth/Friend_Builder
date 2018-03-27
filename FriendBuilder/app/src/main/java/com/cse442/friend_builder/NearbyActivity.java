@@ -1,7 +1,9 @@
 package com.cse442.friend_builder;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationListener;
@@ -16,10 +18,28 @@ import android.location.LocationManager;
 import android.location.Location;
 import android.widget.TextView;
 
+import com.cse442.friend_builder.model.Current;
+import com.cse442.friend_builder.model.User;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+
 public class NearbyActivity extends Activity {
 
     private TextView place;
     private Location userplace;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference ref = database.getReference("User").child("University At Buffalo");
+    Current other;
+    String info;
+    ArrayList<String> userlist = new ArrayList<String>();
+    String[] real = {};
+    String[] example = {};
+    NearbyActivity context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,12 +139,64 @@ public class NearbyActivity extends Activity {
         String person1 = "Bob, I'm cool, Chess,Soccer,Jesus," + bob;
         String person2 = "Jill,I like stuff,Running,Movies,Cats," + jill;
         String person3 = "Clyde,Meet me!,Counting,Broadway,Sledding," + clyde;
-        String[] example = new String[]{person1, person2, person3};
+        example = new String[]{person1, person2, person3};
+
+        //get users from database
 
 
-        ListAdapter l = new NearbyUserAdapter(this, example);
-        ListView userlistview = (ListView) findViewById(R.id.userlistview);
-        userlistview.setAdapter(l);
+        ref.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                int count = 0;
+                for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                    System.out.println("##################");
+                    System.out.println(snapshot);
+                    System.out.println(snapshot.getValue());
+                    other = snapshot.getValue(Current.class);
+                    System.out.println(other.getName());
+
+                    Location otherLocation = new Location(userplace);
+                    otherLocation.setLongitude(other.getLon());
+                    otherLocation.setLatitude(other.getLat());
+                    double distance = userplace.distanceTo(otherLocation) / 1609.34;
+                    String dist = String.format("%.2f", distance);
+
+                    count = count + 1;
+                    info = other.getName() + "," + other.getDescription() + ",Interest a,Interest b,Interest c," + dist;
+                    userlist.add(info);
+                    System.out.println(userlist);
+                    System.out.println("User List");
+                    System.out.println(userlist);
+
+
+                    try {
+                        real = userlist.toArray(new String[count]);
+                    }
+                    catch (NullPointerException e)
+                    {
+                        real = example;
+                    }
+
+                    System.out.println("Real");
+                    System.out.println(real.toString());
+                    System.out.println(example.toString());
+
+                    //ListAdapter l = new NearbyUserAdapter(context, example);
+                    ListAdapter r = new NearbyUserAdapter(context, real);
+                    ListView userlistview = (ListView) findViewById(R.id.userlistview);
+                    //userlistview.setAdapter(l);
+                    userlistview.setAdapter(r);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
 }
