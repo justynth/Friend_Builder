@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 /**
  * Created by Brian on 2/17/2018.
+ * Modified by Peter Yang on 3/26/2018.
  */
 
 class NearbyUserAdapter extends ArrayAdapter<String> {

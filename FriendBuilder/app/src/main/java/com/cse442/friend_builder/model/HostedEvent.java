@@ -9,7 +9,7 @@ import java.sql.Time;
 
 public class HostedEvent extends Event {
 
-    public HostedEvent(String _hostName, String _name, String _theme, Date _date, Time _begin, Time _end, boolean _active) {
+    public HostedEvent(String _hostName, String _name, String _theme, String _date, String _begin, String _end, boolean _active) {
         hostName = _hostName;
         name = _name;
         theme = _theme;
@@ -20,9 +20,4 @@ public class HostedEvent extends Event {
     }
 
     public HostedEvent() {}
-
-    @Override
-    public boolean isHostedEvent() {
-        return true;
-    }
 }
