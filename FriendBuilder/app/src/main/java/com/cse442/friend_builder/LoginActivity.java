@@ -434,10 +434,7 @@ public class LoginActivity extends AppCompatActivity {
         usersNearMe.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view) {
                 Intent toNearMeActivity = new Intent(context, NearbyActivity.class);
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("myName",name);
-                editor.apply();
+                toNearMeActivity.putExtra("myName",nameView.getText().toString());
                 startActivity(toNearMeActivity);
                 finish();
             }
