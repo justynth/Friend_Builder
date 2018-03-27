@@ -5,8 +5,10 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.LocationListener;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +23,9 @@ import android.widget.TextView;
 
 import com.cse442.friend_builder.model.Current;
 import com.cse442.friend_builder.model.User;
+import com.firebase.ui.auth.util.AuthHelper;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -155,7 +160,11 @@ public class NearbyActivity extends AppCompatActivity {
                 int count = 0;
                 for (DataSnapshot snapshot: dataSnapshot.getChildren()){
                     Intent intent = getIntent();
-                    String myName = intent.getExtras().get("myName").toString();
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                    String myName = preferences.getString("myName", "");
+
+                    //String myName = intent.getExtras().get("myName").toString();
+
                     System.out.println("##################");
                     System.out.println(snapshot);
                     System.out.println(snapshot.getValue());
@@ -228,4 +237,5 @@ public class NearbyActivity extends AppCompatActivity {
         }
         return true;
     }
+
 }
