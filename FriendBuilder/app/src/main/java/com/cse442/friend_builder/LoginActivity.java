@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.cse442.friend_builder.model.Current;
@@ -47,6 +48,12 @@ public class LoginActivity extends AppCompatActivity {
     private TextView nameView;
     private TextView editName;
     private TextView editDescription;
+    private TextView interest0;
+    private TextView interest1;
+    private TextView interest2;
+    private EditText editInterest0;
+    private EditText editInterest1;
+    private EditText editInterest2;
 
     private Button editProfile;
     private Button myEvents;
@@ -124,10 +131,20 @@ public class LoginActivity extends AppCompatActivity {
         eventsNearMe = findViewById(R.id.eventsNearMe);
         editDescription = findViewById(R.id.editDescription);
         editName = findViewById(R.id.editName);;
+        interest0 = findViewById(R.id.i0);
+        interest1 = findViewById(R.id.i1);
+        interest2 = findViewById(R.id.i2);
+        editInterest0 = findViewById(R.id.editInterest0);
+        editInterest1 = findViewById(R.id.editInterest1);
+        editInterest2 = findViewById(R.id.editInterest2);
     }
 
     private void setEverythingExceptPicAndName(int visibility) {
         findViewById(R.id.descriptionHeader).setVisibility(visibility);
+        findViewById(R.id.interestsHeader).setVisibility(visibility);
+        interest0.setVisibility(visibility);
+        interest1.setVisibility(visibility);
+        interest2.setVisibility(visibility);
         description.setVisibility(visibility);
         nameView.setVisibility(visibility);
         editProfile.setVisibility(visibility);
@@ -206,7 +223,7 @@ public class LoginActivity extends AppCompatActivity {
                                     loc = "Not Found";
                                 }
 
-                                currentUser = new Current(email, name, "JEAHEA", userplace.getLongitude(), userplace.getLatitude());
+                                currentUser = new Current(email, name, "", userplace.getLongitude(), userplace.getLatitude());
 
                                 userReference.child(removeInvalidKeyCharacters(email)).setValue(currentUser);
                                 setEverythingExceptPicAndName(View.VISIBLE);
@@ -219,6 +236,9 @@ public class LoginActivity extends AppCompatActivity {
                                         currentUser = dataSnapshot.getValue(Current.class);
                                         nameView.setText(currentUser.getName());
                                         description.setText(currentUser.getDescription());
+                                        interest0.setText(currentUser.getInterest0());
+                                        interest1.setText(currentUser.getInterest1());
+                                        interest2.setText(currentUser.getInterest2());
                                         setEverythingExceptPicAndName(View.VISIBLE);
                                     }
 
@@ -272,11 +292,22 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 description.setVisibility(View.GONE);
+                findViewById(R.id.descriptionHeader).setVisibility(View.GONE);
+                findViewById(R.id.interestsHeader).setVisibility(View.GONE);
                 nameView.setVisibility(View.GONE);
+                interest0.setVisibility(View.GONE);
+                interest1.setVisibility(View.GONE);
+                interest2.setVisibility(View.GONE);
                 editDescription.setVisibility(View.VISIBLE);
                 editName.setVisibility(View.VISIBLE);
+                editInterest0.setVisibility(View.VISIBLE);
+                editInterest1.setVisibility(View.VISIBLE);
+                editInterest2.setVisibility(View.VISIBLE);
                 editName.setText(nameView.getText().toString());
                 editDescription.setText(description.getText().toString());
+                editInterest0.setText(interest0.getText().toString());
+                editInterest1.setText(interest1.getText().toString());
+                editInterest2.setText(interest2.getText().toString());
                 editProfile.setText("Save");
                 editProfile.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -285,13 +316,25 @@ public class LoginActivity extends AppCompatActivity {
                         nameView.setText(editName.getText().toString());
                         ArrayList<Event> temp = new ArrayList<>();
                         //temp.add(new HostedEvent(userName, "SSB4", "Competition", null, null, null, false));
-                        currentUser = new Current(email,editName.getText().toString(), editDescription.getText().toString(), 3, 5);
+                        currentUser = new Current(email,editName.getText().toString(), editDescription.getText().toString(), currentUser.getLongitude(), currentUser.getLatitude());
+                        currentUser.setInterest0(editInterest0.getText().toString());
+                        currentUser.setInterest1(editInterest1.getText().toString());
+                        currentUser.setInterest2(editInterest2.getText().toString());
                         userReference.child(removeInvalidKeyCharacters(email)).setValue(currentUser);
                         editProfile.setText("edit");
                         description.setVisibility(View.VISIBLE);
+                        findViewById(R.id.descriptionHeader).setVisibility(View.VISIBLE);
+                        findViewById(R.id.interestsHeader).setVisibility(View.VISIBLE);
                         nameView.setVisibility(View.VISIBLE);
+                        interest0.setVisibility(View.VISIBLE);
+                        interest1.setVisibility(View.VISIBLE);
+                        interest2.setVisibility(View.VISIBLE);
                         editName.setVisibility(View.GONE);
                         editDescription.setVisibility(View.GONE);
+                        editInterest0.setVisibility(View.GONE);
+                        editInterest1.setVisibility(View.GONE);
+                        editInterest2.setVisibility(View.GONE);
+
                         addButtonListeners();
                     }
                 });

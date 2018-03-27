@@ -181,7 +181,7 @@ public class EventActivity extends AppCompatActivity {
                                     else active.setText("Inactive");
 
 
-                                    Button end = dialogEventDetails.findViewById(R.id.endEvent);
+                                    //Button end = dialogEventDetails.findViewById(R.id.endEvent);
                                     EndButtonListener eBL = new EndButtonListener(hostedEvent, timeStamp) {
                                         @Override
                                         public void onClick(View v) {
@@ -214,7 +214,7 @@ public class EventActivity extends AppCompatActivity {
 
                                         }
                                     };
-                                    end.setOnClickListener(eBL);
+                                    //end.setOnClickListener(eBL);
                                     eventDetails.show();
                                 }
                             };
