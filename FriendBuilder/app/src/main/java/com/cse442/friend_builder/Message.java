@@ -81,8 +81,10 @@ public class Message extends AppCompatActivity implements View.OnClickListener {
 
         linearLayoutManager = new LinearLayoutManager(this);
         mList.setHasFixedSize(true);
+        linearLayoutManager.setStackFromEnd(true);
         mList.setLayoutManager(linearLayoutManager);
         mList.setAdapter(messageAdaptar);
+
 
         Fetch();
 
