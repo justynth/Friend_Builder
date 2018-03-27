@@ -44,11 +44,12 @@ GPS based distance between users visible
 
 Users create events for others to see
 
-Users can hide from/ignore other users they don't like
+
 
 
 ## Add-on Features (if we get around to them):
 
+Users can hide from/ignore other users they don't like
 
 App gives recommendations to users based on user supplied interests
 
