@@ -21,9 +21,26 @@ public abstract class User {
         this.longitude = l;
     }
 
-    public String getInterest0() {return interest0;}
-    public String getInterest1() {return interest1;}
-    public String getInterest2() {return interest2;}
+    public String getInterest0() {
+        if(interest0 == null){return "Interest 0";}
+        else
+        {
+            return interest0;
+        }
+    }
+    public String getInterest1()
+    {
+        if(interest1 == null){return "Interest 1";}
+        else
+        {return interest1;}
+    }
+    public String getInterest2() {
+        if (interest2 == null) {
+            return "Interest 2";
+        } else {
+            return interest2;
+        }
+    }
     public void setInterest0(String a) {this.interest0 = a;}
     public void setInterest1(String a) {this.interest1 = a;}
     public void setInterest2(String a) {this.interest2 = a;}
