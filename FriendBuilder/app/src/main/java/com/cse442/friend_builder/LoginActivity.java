@@ -278,7 +278,6 @@ public class LoginActivity extends AppCompatActivity {
                                 .build(), 1);
                         //unAuthToggle = !unAuthToggle;
                         //ask for GPS permissions
-
                     //}
                 }
 
@@ -354,20 +353,17 @@ public class LoginActivity extends AppCompatActivity {
 
                 startActivity(intent);
                 finish();
-
             }
         });
         
          usersNearMe.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view) {
                 Intent toNearMeActivity = new Intent(context, NearbyActivity.class);
-                toNearMeActivity.putExtra("myName",nameView.getText().toString());
                 startActivity(toNearMeActivity);
                 finish();
-
             }
         });
-
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -398,4 +394,3 @@ public class LoginActivity extends AppCompatActivity {
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
     }
 }
-
