@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -53,6 +54,9 @@ public class Message extends AppCompatActivity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
+
+        getSupportActionBar().setTitle("Chat");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         rootR = FirebaseDatabase.getInstance().getReference();
 
@@ -180,5 +184,18 @@ public class Message extends AppCompatActivity implements View.OnClickListener {
                 answer.append(c);
         }
         return answer.toString();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent toNearMeActivity = new Intent(this, NearbyActivity.class);
+                toNearMeActivity.putExtra("myName", sender);
+                startActivity(toNearMeActivity);
+                finish();
+                break;
+        }
+        return true;
     }
 }

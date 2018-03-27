@@ -63,6 +63,7 @@ class NearbyUserAdapter extends ArrayAdapter<String> {
                 intent.putExtra("email",email);
                 intent.putExtra("myName",myName);
                 view.getContext().startActivity(intent);
+                ((Activity)view.getContext()).finish();
             }
         });
         return row;
