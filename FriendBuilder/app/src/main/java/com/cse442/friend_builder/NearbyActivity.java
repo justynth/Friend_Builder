@@ -171,7 +171,7 @@ public class NearbyActivity extends AppCompatActivity {
                     String dist = String.format("%.2f", distance);
 
                     count = count + 1;
-                    info = myName + "," + other.getName() + "," + other.getDescription() + ",Interest a,Interest b,Interest c," + dist + "," + email;
+                    info = myName + "," + other.getName() + "," + other.getDescription() + "," + other.getInterest0() + "," + other.getInterest1() + "," + other.getInterest2() + "," + dist + "," + email;
                     userlist.add(info);
                     System.out.println(userlist);
                     System.out.println("User List");

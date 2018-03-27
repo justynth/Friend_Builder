@@ -84,6 +84,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button eventsNearMe;
 
     private Location userplace;
+    private boolean found;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -244,13 +245,15 @@ public class LoginActivity extends AppCompatActivity {
 
                                 try{
                                     userplace = manager.getLastKnownLocation(provider);
+                                    currentUser = new Current(email, name, "I have not customized my profile yet.", userplace.getLatitude(), userplace.getLongitude());
                                 }
                                 catch (NullPointerException n)
                                 {
                                     loc = "Not Found";
+                                    found = false;
+                                    currentUser = new Current(email, name, "I have not customized my profile yet and I have the default location.", 0, 0);
                                 }
 
-                                currentUser = new Current(email, name, "I have not customized my profile yet.", userplace.getLatitude(), userplace.getLongitude());
 
                                 userReference.child(removeInvalidKeyCharacters(email)).setValue(currentUser);
                                 setEverythingExceptPicAndName(View.VISIBLE);
