@@ -230,6 +230,8 @@ public class EventActivity extends AppCompatActivity {
                         if (!dataSnapshot.getKey().equals("timeEnd")) {
 
                         }
+
+
                         /*HostedEvent hostedEvent = (HostedEvent) dataSnapshot.getValue();
                         TextView timeEnd = dialogEventDetails.findViewById(R.id.timeEnd);
                         if (hostedEvent.getEnd() != null)
@@ -238,6 +240,7 @@ public class EventActivity extends AppCompatActivity {
                         TextView active = dialogEventDetails.findViewById(R.id.active);
                         if (hostedEvent.isActive()) active.setText("Active");
                         else active.setText("Inactive");*/
+
                     }
 
                     @Override
@@ -255,6 +258,7 @@ public class EventActivity extends AppCompatActivity {
 
                     }
                 });
+
     }
 
     @Override

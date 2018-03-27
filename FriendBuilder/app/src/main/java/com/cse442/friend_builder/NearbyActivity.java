@@ -120,9 +120,10 @@ public class NearbyActivity extends AppCompatActivity {
         //String message = intent.getStringExtra(ProfileActivity.EXTRA_MESSAGE);
 
 
-        String person1 = "Bob, I'm cool, Chess,Soccer,Jesus," + bob;
-        String person2 = "Jill,I like stuff,Running,Movies,Cats," + jill;
-        String person3 = "Clyde,Meet me!,Counting,Broadway,Sledding," + clyde;
+        String myName = intent.getExtras().get("myName").toString();
+        String person1 = myName+",Admin, I'm cool, Chess,Soccer,Jesus," + bob;
+        String person2 = myName+",Peter,I like stuff,Running,Movies,Cats," + jill;
+        String person3 = myName+",Brian,Meet me!,Counting,Broadway,Sledding," + clyde;
         String[] example = new String[]{person1, person2, person3};
 
 
