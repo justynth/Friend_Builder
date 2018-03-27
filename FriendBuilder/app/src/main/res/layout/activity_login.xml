@@ -39,7 +39,7 @@
             android:layout_marginBottom="16dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:text="Events\nNear Me"
+            android:text="Logout"
             android:textSize="10sp"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -1,7 +1,9 @@
 package com.cse442.friend_builder;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationListener;
@@ -9,7 +11,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -17,18 +18,33 @@ import android.location.LocationManager;
 import android.location.Location;
 import android.widget.TextView;
 
-public class NearbyActivity extends AppCompatActivity {
+import com.cse442.friend_builder.model.Current;
+import com.cse442.friend_builder.model.User;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+
+public class NearbyActivity extends Activity {
 
     private TextView place;
     private Location userplace;
-
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference ref = database.getReference("User").child("University At Buffalo");
+    Current other;
+    String info;
+    ArrayList<String> userlist = new ArrayList<String>();
+    String[] real = {};
+    String[] example = {};
+    NearbyActivity context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nearby);
-
-        getSupportActionBar().setTitle("Nearby Users");
 
         // Acquire a reference to the system Location Manager
         LocationManager manager = (LocationManager) this.getSystemService(this.LOCATION_SERVICE);
@@ -120,27 +136,83 @@ public class NearbyActivity extends AppCompatActivity {
         //String message = intent.getStringExtra(ProfileActivity.EXTRA_MESSAGE);
 
 
-        String myName = intent.getExtras().get("myName").toString();
-        String person1 = myName+",Admin, I'm cool, Chess,Soccer,Jesus," + bob;
-        String person2 = myName+",Peter,I like stuff,Running,Movies,Cats," + jill;
-        String person3 = myName+",Brian,Meet me!,Counting,Broadway,Sledding," + clyde;
-        String[] example = new String[]{person1, person2, person3};
+        String person1 = "Bob, I'm cool, Chess,Soccer,Jesus," + bob;
+        String person2 = "Jill,I like stuff,Running,Movies,Cats," + jill;
+        String person3 = "Clyde,Meet me!,Counting,Broadway,Sledding," + clyde;
+        example = new String[]{person1, person2, person3};
+
+        //get users from database
 
 
-        ListAdapter l = new NearbyUserAdapter(this, example);
-        ListView userlistview = (ListView) findViewById(R.id.userlistview);
-        userlistview.setAdapter(l);
+        ref.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                int count = 0;
+                for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                    Intent intent = getIntent();
+                    String myName = intent.getExtras().get("myName").toString();
+                    System.out.println("##################");
+                    System.out.println(snapshot);
+                    System.out.println(snapshot.getValue());
+                    other = snapshot.getValue(Current.class);
+                    System.out.println(other.getName());
+
+                    String email = removeInvalidKeyCharacters(other.getEmail());
+
+                    Location otherLocation = new Location(userplace);
+                    otherLocation.setLongitude(other.getLon());
+                    otherLocation.setLatitude(other.getLat());
+                    double distance = userplace.distanceTo(otherLocation) / 1609.34;
+                    String dist = String.format("%.2f", distance);
+
+                    count = count + 1;
+                    info = myName + "," + other.getName() + "," + other.getDescription() + ",Interest a,Interest b,Interest c," + dist + "," + email;
+                    userlist.add(info);
+                    System.out.println(userlist);
+                    System.out.println("User List");
+                    System.out.println(userlist);
+
+
+                    try {
+                        real = userlist.toArray(new String[count]);
+                    }
+                    catch (NullPointerException e)
+                    {
+                        real = example;
+                    }
+
+                    System.out.println("Real");
+                    System.out.println(real.toString());
+                    System.out.println(example.toString());
+
+                    //ListAdapter l = new NearbyUserAdapter(context, example);
+                    ListAdapter r = new NearbyUserAdapter(context, real);
+                    ListView userlistview = (ListView) findViewById(R.id.userlistview);
+                    //userlistview.setAdapter(l);
+                    userlistview.setAdapter(r);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
-                break;
+    private String removeInvalidKeyCharacters(String key) {
+        //sanitize these characters from email
+        //#$/.
+        StringBuilder answer = new StringBuilder();
+        for (int i = 0; i < key.length(); ++i) {
+            char c = key.charAt(i);
+            if (c != '#' && c != '$' && c != '/' && c != '.')
+                answer.append(c);
         }
-        return true;
+
+        return answer.toString();
     }
 
 }

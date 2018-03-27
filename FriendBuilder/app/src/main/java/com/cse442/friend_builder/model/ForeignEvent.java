@@ -13,15 +13,15 @@ public class ForeignEvent extends Event {
         hostName = _hostName;
         name = _name;
         theme = _theme;
-        date = _date;
-        begin = _begin;
-        end = _end;
+        //date = _date;
+       // begin = _begin;
+        //end = _end;
         active = _active;
     }
 
-    @Override
-    public boolean isHostedEvent() {
-        return false;
-    }
+    //@Override
+    //public boolean isHostedEvent() {
+       // return false;
+    //}
 
 }
