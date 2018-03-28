@@ -301,7 +301,8 @@ public class LoginActivity extends AppCompatActivity {
                             .createSignInIntentBuilder()
                             .setIsSmartLockEnabled(false)
                             .setAvailableProviders(Arrays.asList(
-                                    new AuthUI.IdpConfig.EmailBuilder().build()
+                                    //new AuthUI.IdpConfig.EmailBuilder().build()
+                                    new AuthUI.IdpConfig.GoogleBuilder().build()
                             ))
                             .build(), 1);
                     //unAuthToggle = !unAuthToggle;
@@ -429,6 +430,8 @@ public class LoginActivity extends AppCompatActivity {
 
                 intent.putExtra("user", bundle);
                 bundle.putString("name", currentUser.getName());
+                bundle.putString("user", email);
+                bundle.putBoolean("current", true);
 
                 startActivity(intent);
                 finish();
