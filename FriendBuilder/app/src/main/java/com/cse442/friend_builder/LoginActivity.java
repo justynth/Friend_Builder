@@ -113,6 +113,10 @@ public class LoginActivity extends AppCompatActivity {
             if(c != ','){
                 answer.append(c);
             }
+
+        }
+        if(answer.length()<=0){
+            answer.append("Hi");
         }
         return answer.toString();
     }
