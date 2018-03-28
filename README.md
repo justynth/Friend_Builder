@@ -16,11 +16,10 @@ b) https://media.giphy.com/media/8quBFCLZNa1OgvcOJH/giphy.gif
 
 # Running the App Normally:
 
-1) Go to the release page.
-2) Using an Android Device, click the APK file to download the app.
-3) Allow the app to access your location when promoted.
-4) Create an account or login to an existing account.
-5) Explore the App!
+1) Using an Android Device, click the APK file in the Master Branch to download the app.
+2) Allow the app to access your location when prompted.
+3) Create an account or login to an existing account.
+4) Explore the App!
 
 
 # Running the App as an Android Studio Project:
