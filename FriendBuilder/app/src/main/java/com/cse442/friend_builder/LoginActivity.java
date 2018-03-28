@@ -1,55 +1,35 @@
 package com.cse442.friend_builder;
 
-import android.*;
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cse442.friend_builder.model.Current;
 import com.cse442.friend_builder.model.Event;
-import com.cse442.friend_builder.model.HostedEvent;
-import com.cse442.friend_builder.model.Other;
-import com.cse442.friend_builder.model.listeners.UserNameListener;
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.sql.Date;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Timer;
 
 public class LoginActivity extends AppCompatActivity {
     /*new code*/
@@ -123,6 +103,17 @@ public class LoginActivity extends AppCompatActivity {
                 answer.append(c);
         }
 
+        return answer.toString();
+    }
+
+    private String removeComma(String key){
+        StringBuilder answer = new StringBuilder();
+        for(int i = 0;i<key.length(); ++i){
+            char c = key.charAt(i);
+            if(c != ','){
+                answer.append(c);
+            }
+        }
         return answer.toString();
     }
 
@@ -340,8 +331,8 @@ public class LoginActivity extends AppCompatActivity {
                 editProfile.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        description.setText(editDescription.getText().toString());
-                        nameView.setText(editName.getText().toString());
+                        description.setText(removeComma(editDescription.getText().toString()));
+                        nameView.setText(removeComma(editName.getText().toString()));
                         ArrayList<Event> temp = new ArrayList<>();
                         //temp.add(new HostedEvent(userName, "SSB4", "Competition", null, null, null, false));
 
@@ -394,10 +385,10 @@ public class LoginActivity extends AppCompatActivity {
                             loc = "Not Found";
                         }
 
-                        currentUser = new Current(email,editName.getText().toString(), editDescription.getText().toString(), userplace.getLatitude(), userplace.getLongitude());
-                        currentUser.setInterest0(editInterest0.getText().toString());
-                        currentUser.setInterest1(editInterest1.getText().toString());
-                        currentUser.setInterest2(editInterest2.getText().toString());
+                        currentUser = new Current(email, removeComma(editName.getText().toString()), removeComma(editDescription.getText().toString()), userplace.getLatitude(), userplace.getLongitude());
+                        currentUser.setInterest0(removeComma(editInterest0.getText().toString()));
+                        currentUser.setInterest1(removeComma(editInterest1.getText().toString()));
+                        currentUser.setInterest2(removeComma(editInterest2.getText().toString()));
                         userReference.child(removeInvalidKeyCharacters(email)).setValue(currentUser);
                         editProfile.setText("edit");
                         description.setVisibility(View.VISIBLE);
@@ -442,7 +433,7 @@ public class LoginActivity extends AppCompatActivity {
                 Intent toNearMeActivity = new Intent(context, NearbyActivity.class);
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("myName",name);
+                editor.putString("myName", removeComma(name));
                 editor.apply();
                 startActivity(toNearMeActivity);
                 finish();
