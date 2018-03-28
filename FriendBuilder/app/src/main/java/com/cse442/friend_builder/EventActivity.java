@@ -197,12 +197,16 @@ public class EventActivity extends AppCompatActivity {
                                     TextView timeBegin = dialogEventDetails.findViewById(R.id.timeBegin);
                                     timeBegin.setText("Time Begin: " + dateTime[1]);
                                     TextView timeEnd = dialogEventDetails.findViewById(R.id.timeEnd);
+
                                     if (hostedEvent.getEnd() != null)
                                         timeEnd.setText("Time End: " + hostedEvent.getEnd());
                                     else timeEnd.setText("");
                                     TextView active = dialogEventDetails.findViewById(R.id.active);
                                     if (hostedEvent.isActive()) active.setText("Active");
                                     else active.setText("Inactive");
+
+                                    Button end = dialogEventDetails.findViewById(R.id.end);
+                                    if (!hostedEvent.isActive()) end.setVisibility(View.GONE);
 
 
                                     //Button end = dialogEventDetails.findViewById(R.id.endEvent);
@@ -228,6 +232,9 @@ public class EventActivity extends AppCompatActivity {
                                                     m.put("time", startTime);
 
                                                     eventReference.child(removeInvalidKeyCharacters(email)).child(key).setValue(m);
+                                                    eventDetails.hide();
+                                                    startActivity(new Intent(context, LoginActivity.class));
+                                                    finish();
                                                 }
 
                                                 @Override
@@ -238,7 +245,7 @@ public class EventActivity extends AppCompatActivity {
 
                                         }
                                     };
-                                    //end.setOnClickListener(eBL);
+                                    end.setOnClickListener(eBL);
                                     eventDetails.show();
                                 }
                             };
@@ -342,7 +349,8 @@ public class EventActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_event, menu);
+        if (getIntent().getBundleExtra("user").getBoolean("current") == true)
+            getMenuInflater().inflate(R.menu.menu_event, menu);
         return true;
     }
 
