@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Event Name" />
+        android:hint="Event Name" />
 
     <EditText
         android:id="@+id/eventTheme"
@@ -20,7 +20,16 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Event Theme" />
+        android:hint="Event Theme"/>
+
+    <EditText
+        android:id="@+id/describeLocation"
+        android:layout_width="match_parent"
+        android:layout_height="225dp"
+        android:ems="10"
+        android:gravity="top|left"
+        android:hint="Describe Location"
+        android:inputType="textMultiLine" />
 
     <Button
         android:id="@+id/submit"
