@@ -89,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        while (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
@@ -301,8 +301,7 @@ public class LoginActivity extends AppCompatActivity {
                             .createSignInIntentBuilder()
                             .setIsSmartLockEnabled(false)
                             .setAvailableProviders(Arrays.asList(
-                                    //new AuthUI.IdpConfig.EmailBuilder().build()
-                                    new AuthUI.IdpConfig.GoogleBuilder().build()
+                                    new AuthUI.IdpConfig.EmailBuilder().build()
                             ))
                             .build(), 1);
                     //unAuthToggle = !unAuthToggle;
