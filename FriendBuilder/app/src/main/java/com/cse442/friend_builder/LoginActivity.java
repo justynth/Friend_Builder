@@ -89,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        while (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
@@ -429,6 +429,8 @@ public class LoginActivity extends AppCompatActivity {
 
                 intent.putExtra("user", bundle);
                 bundle.putString("name", currentUser.getName());
+                bundle.putString("user", email);
+                bundle.putBoolean("current", true);
 
                 startActivity(intent);
                 finish();
