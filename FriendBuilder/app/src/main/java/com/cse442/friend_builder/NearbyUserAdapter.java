@@ -48,12 +48,13 @@ class NearbyUserAdapter extends ArrayAdapter<String> {
 
         final String myName = user[0];
         u.setText(user[1]);
-        d.setText(user[2]);
-        i1.setText(user[3]);
-        i2.setText(user[4]);
-        i3.setText(user[5]);
-        dis.setText(user[6]);
-        final String email = user[7];
+        dis.setText(user[2]);
+        final String email = user[3];
+        d.setText(user[4]);
+        i1.setText(user[5]);
+        i2.setText(user[6]);
+        i3.setText(user[7]);
+
 
         b2.setOnClickListener(new View.OnClickListener() {
             @Override

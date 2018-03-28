@@ -5,8 +5,10 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.LocationListener;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -155,7 +157,11 @@ public class NearbyActivity extends AppCompatActivity {
                 int count = 0;
                 for (DataSnapshot snapshot: dataSnapshot.getChildren()){
                     Intent intent = getIntent();
-                    String myName = intent.getExtras().get("myName").toString();
+
+
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                    String myName = preferences.getString("myName", "");
+
                     System.out.println("##################");
                     System.out.println(snapshot);
                     System.out.println(snapshot.getValue());
@@ -171,7 +177,7 @@ public class NearbyActivity extends AppCompatActivity {
                     String dist = String.format("%.2f", distance);
 
                     count = count + 1;
-                    info = myName + "," + other.getName() + "," + other.getDescription() + "," + other.getInterest0() + "," + other.getInterest1() + "," + other.getInterest2() + "," + dist + "," + email;
+                    info = myName + "," + other.getName() + "," + dist + "," + email + "," + other.getDescription() + "," + other.getInterest0() + "," + other.getInterest1() + "," + other.getInterest2();
                     userlist.add(info);
                     System.out.println(userlist);
                     System.out.println("User List");
