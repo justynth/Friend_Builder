@@ -6,19 +6,19 @@ public abstract class User {
     protected String email;
     protected String name;
     protected String description;
-    protected double latitude;
-    protected double longitude;
+    protected double lat;
+    protected double lon;
     protected String interest0;
     protected String interest1;
     protected String interest2;
 
-    public double getLat() {return latitude;}
-    public double getLon() {return longitude;}
+    public double getLat() {return lat;}
+    public double getLon() {return lon;}
     public void setLatitude(double l){
-        this.latitude = l;
+        this.lat = l;
     }
     public void setLongitude(double l){
-        this.longitude = l;
+        this.lon = l;
     }
 
     public String getInterest0() {
