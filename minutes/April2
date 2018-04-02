@@ -1,0 +1,41 @@
+Team Randos
+April 2, 2018
+Meeting Minutes
+
+Start: 10 am
+End: 
+
+
+Present:Peter, Brian, Wilson
+Absent:Justyn
+
+Discussed:
+
+For Beta, we need to make a landing page. Peter will look into that.
+How to enable Alpha testing in class.
+
+
+
+
+Accomplished:
+
+Brian: For Alpha - Created Youtube video. Created APK. Fixed location permissions.  Fixed some null pointer problems with locations.
+
+Peter:Fixed Chat bugs, Fixed some bugs that crashes app. 
+Wilson: Cleaned up Event listeners. 
+Justyn: Nothing?
+
+
+
+By next meeting:
+
+Brian: Fix bug that was reported by jury person (#110).  Work on sorting users by distance (#65). Add comments to Nearby Users page code.
+
+Peter: make code more readable with comments (issue #64), fix bugs.
+Wilson: 
+Finish adding comments to EventActivity and LoginActivity #64
+Work on notifications  #109
+Sorting by distance on nearby user page #65
+Draft out what we need on landing page #113
+
+Justyn: 
