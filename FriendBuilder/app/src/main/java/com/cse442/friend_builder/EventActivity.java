@@ -60,10 +60,10 @@ public class EventActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-    private static EventActivity context;
+    private EventActivity context;
 
-    private static LinearLayout hostedEventsList;
-    private static LinearLayout attendedEventsList;
+    private LinearLayout hostedEventsList;
+    private LinearLayout attendedEventsList;
     private EditText eventName;
     private EditText eventTheme;
     private EditText describeLocation;
@@ -82,6 +82,28 @@ public class EventActivity extends AppCompatActivity {
     private String email;
     private String name;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_event);
+
+        // Create the adapter that will return a fragment for each of the three
+        // primary sections of the activity.
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+
+        editVisuals();
+        initializeInstanceVariables() ;
+        initializeListeners();
+    }
+
     private boolean validInput(String s) {
         if (s.length() == 0) return false;
         int spaceCount = 0;
@@ -90,6 +112,37 @@ public class EventActivity extends AppCompatActivity {
         }
         if (spaceCount == s.length()) return false;
         return true;
+    }
+
+    private void initializeListeners() {
+        //submit button
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (validInput(eventName.getText().toString()) && validInput(eventTheme.getText().toString()) &&
+                        validInput(describeLocation.getText().toString())) {
+                    HostedEvent hostedEvent = new HostedEvent(
+                            name + "/" + email, eventName.getText().toString(), eventTheme.getText().toString(), null, null, null, true
+                    );
+
+                    hostedEvent.setLocationDescription(describeLocation.getText().toString());
+
+                    Map map = new HashMap();
+                    map.put("time", ServerValue.TIMESTAMP);
+                    map.put("event", hostedEvent);
+
+                    eventReference.child(removeInvalidKeyCharacters(email)).push().setValue(map);
+
+                    eventName.setText("");
+                    eventTheme.setText("");
+                    describeLocation.setText("");
+
+                    dialog.hide();
+                }
+            }
+        });
+        //event listeners
+        addEventListener();
     }
 
     private void initializeInstanceVariables() {
@@ -117,32 +170,6 @@ public class EventActivity extends AppCompatActivity {
         eventTheme = dialogView.findViewById(R.id.eventTheme);
         describeLocation = dialogView.findViewById(R.id.describeLocation);
         submit = dialogView.findViewById(R.id.submit);
-
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (validInput(eventName.getText().toString()) && validInput(eventTheme.getText().toString()) &&
-                        validInput(describeLocation.getText().toString())) {
-                    HostedEvent hostedEvent = new HostedEvent(
-                            name + "/" + email, eventName.getText().toString(), eventTheme.getText().toString(), null, null, null, true
-                    );
-
-                    hostedEvent.setLocationDescription(describeLocation.getText().toString());
-
-                    Map map = new HashMap();
-                    map.put("time", ServerValue.TIMESTAMP);
-                    map.put("event", hostedEvent);
-
-                    eventReference.child(removeInvalidKeyCharacters(email)).push().setValue(map);
-
-                    eventName.setText("");
-                    eventTheme.setText("");
-                    describeLocation.setText("");
-
-                    dialog.hide();
-                }
-            }
-        });
     }
 
     /*new method*/
@@ -163,171 +190,42 @@ public class EventActivity extends AppCompatActivity {
 
     private void addEventListener() {
         //this belong somewhere else that reads from the database
-                eventReference.child(removeInvalidKeyCharacters(email)).addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        if (dataSnapshot.getKey().equals("timeEnd")) {}
-                        else {
-                            Button temp = new Button(context);
-                            Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
-                            HostedEvent hE = it.next().getValue(HostedEvent.class);
-                            //Toast.makeText(context, ""+it.next().getValue().toString(), Toast.LENGTH_SHORT).show();
-                            //Toast.makeText(context, ""+dataSnapshot.getChildren().iterator().next().getValue().toString(), Toast.LENGTH_SHORT).show();
-                            //HostedEvent hE = (HostedEvent) m.get("event");
-                            String key = dataSnapshot.getKey();
-                            temp.setText(hE.getName());
-                            ButtonEventListener bEL =  new ButtonEventListener((long)it.next().getValue(), hE, key) { //get this bEL and set different hostedEvent
-                                @Override
-                                public void onClick(View v) {
-                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                                    sdf.setTimeZone(TimeZone.getTimeZone("America/New_York"));
-
-                                    String[] dateTime = sdf.format(new Date(timeStamp)).split(" ");
-
-                                    TextView hostName = dialogEventDetails.findViewById(R.id.hostName);
-                                    hostName.setText("Host: " + hostedEvent.getHostName());
-                                    TextView eventName = dialogEventDetails.findViewById(R.id.eventName);
-                                    eventName.setText("Event Name: " + hostedEvent.getName());
-                                    TextView eventTheme = dialogEventDetails.findViewById(R.id.eventTheme);
-                                    eventTheme.setText("Event Theme: " + hostedEvent.getTheme());
-                                    TextView describeLocation = dialogEventDetails.findViewById(R.id.describeLocation);
-                                    describeLocation.setText("Location Description: " + hostedEvent.getLocationDescription());
-                                    TextView date = dialogEventDetails.findViewById(R.id.date);
-                                    date.setText("Date Begin: " + dateTime[0]);
-                                    TextView timeBegin = dialogEventDetails.findViewById(R.id.timeBegin);
-                                    timeBegin.setText("Time Begin: " + dateTime[1]);
-                                    TextView timeEnd = dialogEventDetails.findViewById(R.id.timeEnd);
-
-                                    if (hostedEvent.getEnd() != null)
-                                        timeEnd.setText("Time End: " + hostedEvent.getEnd());
-                                    else timeEnd.setText("");
-                                    TextView active = dialogEventDetails.findViewById(R.id.active);
-                                    if (hostedEvent.isActive()) active.setText("Active");
-                                    else active.setText("Inactive");
-
-                                    Button end = dialogEventDetails.findViewById(R.id.end);
-                                    if (!hostedEvent.isActive()) end.setVisibility(View.GONE);
-
-
-                                    //Button end = dialogEventDetails.findViewById(R.id.endEvent);
-                                    EndButtonListener eBL = new EndButtonListener(hostedEvent, timeStamp) {
-                                        @Override
-                                        public void onClick(View v) {
-                                            Map map = new HashMap();
-                                            map.put("timeEnd", ServerValue.TIMESTAMP);
-                                            eventReference.child(removeInvalidKeyCharacters(email)).child("timeEnd").setValue(map);
-
-                                            eventReference.child(removeInvalidKeyCharacters(email)).child("timeEnd").addListenerForSingleValueEvent(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                                    Map map = (HashMap) dataSnapshot.getValue();
-
-                                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                                                    sdf.setTimeZone(TimeZone.getTimeZone("America/New_York"));
-                                                    endTime = sdf.format(new Date((long)map.get("timeEnd")));
-                                                    Map m = new HashMap();
-                                                    hostedEvent = new HostedEvent(hostedEvent.getHostName(), hostedEvent.getName(),
-                                                            hostedEvent.getTheme(), null, null, endTime, false);
-                                                    m.put("event", hostedEvent);
-                                                    m.put("time", startTime);
-
-                                                    eventReference.child(removeInvalidKeyCharacters(email)).child(key).setValue(m);
-                                                    eventDetails.hide();
-                                                    startActivity(new Intent(context, LoginActivity.class));
-                                                    finish();
-                                                }
-
-                                                @Override
-                                                public void onCancelled(DatabaseError databaseError) {
-
-                                                }
-                                            });
-
-                                        }
-                                    };
-                                    end.setOnClickListener(eBL);
-                                    eventDetails.show();
-                                }
-                            };
-                            temp.setOnClickListener(bEL);
-                            hosted.hostedEventsList.addView(temp);
-                        }
-
-                    }
-
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                        //Toast.makeText(EventActivity.this, ""+dataSnapshot.getValue().toString(), Toast.LENGTH_SHORT).show();
-                       // if (!dataSnapshot.getKey().equals("timeEnd")) {
-                        // }
-
-
-                        /*HostedEvent hostedEvent = (HostedEvent) dataSnapshot.getValue();
-                        TextView timeEnd = dialogEventDetails.findViewById(R.id.timeEnd);
-                        if (hostedEvent.getEnd() != null)
-                            timeEnd.setText("Time End: " + hostedEvent.getEnd());
-                        else timeEnd.setText("");
-                        TextView active = dialogEventDetails.findViewById(R.id.active);
-                        if (hostedEvent.isActive()) active.setText("Active");
-                        else active.setText("Inactive");*/
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event);
-
-
-
-
-
-
-
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-
-        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        eventReference.child(removeInvalidKeyCharacters(email)).addChildEventListener(new ChildEventListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if (dataSnapshot.getKey().equals("timeEnd")) {}
+                else {
+                    Button temp = new Button(context);
+                    Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
+                    HostedEvent hE = it.next().getValue(HostedEvent.class);
+                    //Toast.makeText(context, ""+it.next().getValue().toString(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context, ""+dataSnapshot.getChildren().iterator().next().getValue().toString(), Toast.LENGTH_SHORT).show();
+                    //HostedEvent hE = (HostedEvent) m.get("event");
+                    String key = dataSnapshot.getKey();
+                    temp.setText(hE.getName());
+                    ButtonEventListener bEL =  new ButtonEventListener((long)it.next().getValue(), hE, key, dialogEventDetails,
+                                                                        email, eventReference, eventDetails, context);
+                    temp.setOnClickListener(bEL);
+                    hosted.hostedEventsList.addView(temp);
+                }
+
             }
-        });*/
-        editVisuals();
-        initializeInstanceVariables() ;
-        addEventListener();
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            }
 
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
 
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
 
     }
 
@@ -403,10 +301,6 @@ public class EventActivity extends AppCompatActivity {
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
 
-
-
-
-
             return rootView;
         }
     }
@@ -419,8 +313,6 @@ public class EventActivity extends AppCompatActivity {
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
-
-
         }
 
         @Override
