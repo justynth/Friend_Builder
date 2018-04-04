@@ -66,6 +66,8 @@ public class LoginActivity extends AppCompatActivity {
     private Location userplace;
     private boolean found;
 
+
+    private SharedPreferences editor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -83,6 +85,7 @@ public class LoginActivity extends AppCompatActivity {
         initializeInstanceVariables();
         addAuthListener();
         addButtonListeners();
+
 
         findViewById(R.id.eventsNearMe).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,6 +123,13 @@ public class LoginActivity extends AppCompatActivity {
         }
         return answer.toString();
     }
+
+    private void getChangedName(){
+        editor = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor edit = editor.edit();
+        edit.putString("myName", removeComma(nameView.getText().toString()));
+        edit.commit();
+    };
 
     /*new method*/
     private boolean loggedIn(FirebaseUser user) {
@@ -435,10 +445,7 @@ public class LoginActivity extends AppCompatActivity {
         usersNearMe.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view) {
                 Intent toNearMeActivity = new Intent(context, NearbyActivity.class);
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("myName", removeComma(name));
-                editor.apply();
+                getChangedName();
                 startActivity(toNearMeActivity);
                 finish();
             }
