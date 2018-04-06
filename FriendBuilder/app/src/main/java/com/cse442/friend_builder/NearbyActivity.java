@@ -43,6 +43,7 @@ public class NearbyActivity extends AppCompatActivity {
     String[] real = {};
     String[] example = {};
     NearbyActivity context = this;
+    boolean found = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,9 +92,6 @@ public class NearbyActivity extends AppCompatActivity {
         String provider = LocationManager.GPS_PROVIDER;
         //String provider = LocationManager.NETWORK_PROVIDER;
 
-        String bob = "Undefined";
-        String jill = "Undefined";
-        String clyde = "Undefined";
 
         //Try to find the user's location
 
@@ -102,32 +100,12 @@ public class NearbyActivity extends AppCompatActivity {
             loc = String.format("%.2f", userplace.getLatitude());
             loc = loc + ", " + String.format("%.2f", userplace.getLongitude());
 
-            //Made up people with sample locations, to test the layout
-
-            Location buffalo = new Location(userplace);
-            buffalo.setLatitude(42.88);
-            buffalo.setLongitude(-78.87);
-
-            Location sanfran = new Location(userplace);
-            sanfran.setLatitude(37.77);
-            sanfran.setLongitude(-122.41);
-
-            Location london = new Location(userplace);
-            london.setLatitude(51.51);
-            london.setLongitude(-.12);
-
-            double bobdist = userplace.distanceTo(buffalo) / 1609.34;
-            double jilldist = userplace.distanceTo(sanfran) / 1609.34;
-            double clydedist = userplace.distanceTo(london) / 1609.34;
-
-            bob = String.format("%.2f", bobdist);
-            jill =  String.format("%.2f", jilldist);
-            clyde = String.format("%.2f",clydedist);
-
+            found = true;
         }
         catch (NullPointerException n)
         {
             loc = "Not Found";
+            found = false;
         }
 
         place = (TextView) findViewById(R.id.place);
@@ -140,11 +118,6 @@ public class NearbyActivity extends AppCompatActivity {
         Intent intent = getIntent();
         //String message = intent.getStringExtra(ProfileActivity.EXTRA_MESSAGE);
 
-
-        String person1 = "Bob, I'm cool, Chess,Soccer,Jesus," + bob;
-        String person2 = "Jill,I like stuff,Running,Movies,Cats," + jill;
-        String person3 = "Clyde,Meet me!,Counting,Broadway,Sledding," + clyde;
-        example = new String[]{person1, person2, person3};
 
         //get users from database
 
@@ -170,11 +143,15 @@ public class NearbyActivity extends AppCompatActivity {
 
                     String email = removeInvalidKeyCharacters(other.getEmail());
 
-                    Location otherLocation = new Location(userplace);
-                    otherLocation.setLongitude(other.getLon());
-                    otherLocation.setLatitude(other.getLat());
-                    double distance = userplace.distanceTo(otherLocation) / 1609.34;
-                    String dist = String.format("%.2f", distance);
+                    String dist = "Undefined";
+
+                    if(found) {
+                        Location otherLocation = new Location(userplace);
+                        otherLocation.setLongitude(other.getLon());
+                        otherLocation.setLatitude(other.getLat());
+                        double distance = userplace.distanceTo(otherLocation) / 1609.34;
+                        dist = String.format("%.2f", distance);
+                    }
 
                     count = count + 1;
                     info = myName + "," + other.getName() + "," + dist + "," + email + "," + other.getDescription() + "," + other.getInterest0() + "," + other.getInterest1() + "," + other.getInterest2();
@@ -196,10 +173,8 @@ public class NearbyActivity extends AppCompatActivity {
                     System.out.println(real.toString());
                     System.out.println(example.toString());
 
-                    //ListAdapter l = new NearbyUserAdapter(context, example);
                     ListAdapter r = new NearbyUserAdapter(context, real);
                     ListView userlistview = (ListView) findViewById(R.id.userlistview);
-                    //userlistview.setAdapter(l);
                     userlistview.setAdapter(r);
                 }
 
