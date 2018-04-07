@@ -234,4 +234,11 @@ public class NearbyActivity extends AppCompatActivity {
         }
         return true;
     }
+    @Override
+    public void onBackPressed() {
+        Intent setIntent = new Intent(this,LoginActivity.class);
+        startActivity(setIntent);
+        finish();
+
+    }
 }

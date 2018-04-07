@@ -480,5 +480,12 @@ public class LoginActivity extends AppCompatActivity {
         if (mAuthStateListener != null)
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
     }
+
+    @Override
+    public void onBackPressed() {
+        if(editProfile.getText().toString()=="edit") {
+            AuthUI.getInstance().signOut(context);
+        }
+    }
 }
 
