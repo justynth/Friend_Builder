@@ -1,0 +1,45 @@
+Team Randos
+Meeting Minutes
+April 9, 2018
+
+Meeting Time: 10am - 11am
+
+Present:Peter, Justyn, Brian
+
+Absent: Wilson
+
+
+Talked About:
+
+We need to do 2 things for the Beta release on Friday:
+Create landing page
+Fix any outstanding major bugs
+
+For 1, use a Github page, found in the Docs folder in Master.
+
+For 2, focus on:
+Anything that crashes the app
+
+
+Completed Since Last Meeting:
+
+Brian- Hot Fix for crash caused by not finding the user’s location in nearby users page
+Justyn- N/A
+Wilson- Absent 
+Peter- fix functionality on Android device back button. (Issue#117)
+
+
+To do by Beta (Friday):
+
+Brian- Deploy to Google Play, or create a basic website for a landing page. Try to implement sorting of nearby users by distance, using dictionary with distance as key.
+Justyn- Create a Help Wanted Issue for the collaboration phase of the project. Assist with landing page. Search for bugs.
+Wilson- Absent
+Peter- find any bugs and make improvements. , Help create landing page. 
+
+
+To do by next meeting (Monday):
+
+Brian- Prepare for presentation to 115
+Justyn- Work on issue #120, where app crashes when screen is turned horizontally.
+Wilson- Absent
+Peter- look into what issues need to be done.  Create Linkedin profile
