@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.LocationListener;
+import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -21,8 +23,11 @@ import android.location.LocationManager;
 import android.location.Location;
 import android.widget.TextView;
 
+import com.cse442.friend_builder.model.BrianDictionary;
 import com.cse442.friend_builder.model.Current;
 import com.cse442.friend_builder.model.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,6 +35,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.function.BiConsumer;
 
 public class NearbyActivity extends AppCompatActivity {
 
@@ -44,6 +53,8 @@ public class NearbyActivity extends AppCompatActivity {
     String[] example = {};
     NearbyActivity context = this;
     boolean found = true;
+
+    BrianDictionary others = new BrianDictionary();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +80,7 @@ public class NearbyActivity extends AppCompatActivity {
             public void onProviderDisabled(String provider) {}
         };
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        while (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -123,17 +134,19 @@ public class NearbyActivity extends AppCompatActivity {
 
 
         ref.addValueEventListener(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @SuppressLint("RestrictedApi")
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 int count = 0;
-                for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
                     Intent intent = getIntent();
 
 
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
                     String myName = preferences.getString("myName", "");
+                    String myEmail = removeInvalidKeyCharacters(preferences.getString("myEmail", ""));
 
                     System.out.println("##################");
                     System.out.println(snapshot);
@@ -144,39 +157,55 @@ public class NearbyActivity extends AppCompatActivity {
                     String email = removeInvalidKeyCharacters(other.getEmail());
 
                     String dist = "Undefined";
+                    double distance = 0;
 
-                    if(found) {
+                    if (found) {
                         Location otherLocation = new Location(userplace);
                         otherLocation.setLongitude(other.getLon());
                         otherLocation.setLatitude(other.getLat());
-                        double distance = userplace.distanceTo(otherLocation) / 1609.34;
+                        distance = userplace.distanceTo(otherLocation) / 1609.34;
                         dist = String.format("%.2f", distance);
                     }
 
-                    count = count + 1;
-                    info = myName + "," + other.getName() + "," + dist + "," + email + "," + other.getDescription() + "," + other.getInterest0() + "," + other.getInterest1() + "," + other.getInterest2();
-                    userlist.add(info);
+                    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                    FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                    if(! removeInvalidKeyCharacters(user.getEmail()).equals( email)) {
+
+                        count = count + 1;
+                        info = myName + "," + other.getName() + "," + dist + "," + email + "," + other.getDescription() + "," + other.getInterest0() + "," + other.getInterest1() + "," + other.getInterest2();
+
+
+                        //Send to Dictionary
+
+                        others.add(distance, info);
+                    }
+
+                    System.out.println("Mail " + removeInvalidKeyCharacters(user.getEmail()));
+                    System.out.println("Email " + email);
+
+                    //userlist.add(info);
                     System.out.println(userlist);
                     System.out.println("User List");
                     System.out.println(userlist);
 
+                }
 
-                    try {
-                        real = userlist.toArray(new String[count]);
-                    }
-                    catch (NullPointerException e)
-                    {
-                        real = example;
-                    }
+                others.setLength(count);
+                userlist = others.make();
 
-                    System.out.println("Real");
-                    System.out.println(real.toString());
-                    System.out.println(example.toString());
+                try{
+                    real = userlist.toArray(new String[count]);
+                }
+                catch(NullPointerException e)
+                {
+                    real = example;
+                }
 
                     ListAdapter r = new NearbyUserAdapter(context, real);
                     ListView userlistview = (ListView) findViewById(R.id.userlistview);
                     userlistview.setAdapter(r);
-                }
+
 
             }
 
