@@ -438,4 +438,10 @@ public class EventActivity extends AppCompatActivity {
             return 2;
         }
     }
+    @Override
+    public void onBackPressed() {
+        Intent setIntent = new Intent(this,LoginActivity.class);
+        startActivity(setIntent);
+        finish();
+    }
 }
