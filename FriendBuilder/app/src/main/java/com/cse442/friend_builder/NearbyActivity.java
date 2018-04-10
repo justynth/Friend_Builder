@@ -26,6 +26,8 @@ import android.widget.TextView;
 import com.cse442.friend_builder.model.BrianDictionary;
 import com.cse442.friend_builder.model.Current;
 import com.cse442.friend_builder.model.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -144,6 +146,7 @@ public class NearbyActivity extends AppCompatActivity {
 
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
                     String myName = preferences.getString("myName", "");
+                    String myEmail = removeInvalidKeyCharacters(preferences.getString("myEmail", ""));
 
                     System.out.println("##################");
                     System.out.println(snapshot);
@@ -164,15 +167,22 @@ public class NearbyActivity extends AppCompatActivity {
                         dist = String.format("%.2f", distance);
                     }
 
-                    count = count + 1;
-                    info = myName + "," + other.getName() + "," + dist + "," + email + "," + other.getDescription() + "," + other.getInterest0() + "," + other.getInterest1() + "," + other.getInterest2();
+                    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                    FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                    if(! removeInvalidKeyCharacters(user.getEmail()).equals( email)) {
+
+                        count = count + 1;
+                        info = myName + "," + other.getName() + "," + dist + "," + email + "," + other.getDescription() + "," + other.getInterest0() + "," + other.getInterest1() + "," + other.getInterest2();
 
 
-                    //Send to Dictionary
+                        //Send to Dictionary
 
-                    others.add(distance, info);
+                        others.add(distance, info);
+                    }
 
-
+                    System.out.println("Mail " + removeInvalidKeyCharacters(user.getEmail()));
+                    System.out.println("Email " + email);
 
                     //userlist.add(info);
                     System.out.println(userlist);
