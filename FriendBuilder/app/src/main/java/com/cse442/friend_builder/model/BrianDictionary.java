@@ -1,10 +1,11 @@
 package com.cse442.friend_builder.model;
 
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by btack on 4/9/2018.
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 
 public class BrianDictionary {
 
-    public ArrayList<Pair<Double, String>> values = new ArrayList<>();
+    public List<Pair<Double, String>> values = new ArrayList<>();
     public double length = 0;
 
 
@@ -31,10 +32,12 @@ public class BrianDictionary {
         values.add(new Pair<>(distance,info));
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    //@RequiresApi(api = Build.VERSION_CODES.N)
+
+
     public ArrayList<String> make(){
 
-        values.sort(new Closeness());
+        Collections.sort(values,(new Closeness()));
 
         ArrayList<String> info = new ArrayList<>();
 
