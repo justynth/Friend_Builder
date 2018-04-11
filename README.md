@@ -4,6 +4,9 @@
 # Project Description:
 Android app to help people who have similar interests connect and chat: Use GPS to locate and match similar interests (alternatively, have the user set up the info themselves and allow them to read the descriptions of other users in the vicinity)
 
+# Landing page
+https://justynth.github.io/Friend_Builder/
+
 # See the App running:
 
 Alpha Release:
