@@ -1,147 +1,108 @@
 <!DOCTYPE html>
 <html>
 <head>
-<style>
-* {
-    box-sizing: border-box;
-}
+	<link rel="stylesheet" type="text/css" href="friendbuild.css">
 
-body {
-    font-family: Arial;
-    padding: 10px;
-    background: #f1f1f1;
-}
-
-/* Header/Blog Title */
-.header {
-    padding: 30px;
-    text-align: center;
-    background: white;
-}
-
-.header h1 {
-    font-size: 50px;
-}
-
-/* Style the top navigation bar */
-.topnav {
-    overflow: hidden;
-    background-color: #333;
-}
-
-/* Style the topnav links */
-.topnav a {
-    float: left;
-    display: block;
-    color: #f2f2f2;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-
-/* Change color on hover */
-.topnav a:hover {
-    background-color: #ddd;
-    color: black;
-}
-
-/* Create two unequal columns that floats next to each other */
-/* Left column */
-.leftcolumn {   
-    float: left;
-    width: 75%;
-}
-
-/* Right column */
-.rightcolumn {
-    float: left;
-    width: 25%;
-    background-color: #f1f1f1;
-    padding-left: 20px;
-}
-
-/* Fake image */
-.fakeimg {
-    background-color: #aaa;
-    width: 100%;
-    padding: 20px;
-}
-
-/* Add a card effect for articles */
-.card {
-    background-color: white;
-    padding: 20px;
-    margin-top: 20px;
-}
-
-/* Clear floats after the columns */
-.row:after {
-    content: "";
-    display: table;
-    clear: both;
-}
-
-/* Footer */
-.footer {
-    padding: 20px;
-    text-align: center;
-    background: #ddd;
-    margin-top: 20px;
-}
-
-/* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
-@media screen and (max-width: 800px) {
-    .leftcolumn, .rightcolumn {   
-        width: 100%;
-        padding: 0;
-    }
-}
-
-/* Responsive layout - when the screen is less than 400px wide, make the navigation links stack on top of each other instead of next to each other */
-@media screen and (max-width: 400px) {
-    .topnav a {
-        float: none;
-        width: 100%;
-    }
-}
-</style>
 </head>
 <body>
 
 <div class="header">
   <h1>Friend Builder</h1>
-  <p></p>
 </div>
 
 <div class="topnav">
-  <a href="#">Home</a>
-  <a href="#">Friend Builder</a>
-  <a href="#">About</a>
-  <a href="#" style="float:right">Contact</a>
+  <a href="index.html">Home</a>
+  <a href="https://github.com/justynth/Friend_Builder/issues/new">Submit Issues</a>
+  <a href="https://gitter.im/Friend_Builder/Lobby?utm_source=ios&utm_medium=link&utm_campaign=ios-share-link" style="float:right">Contact</a>
 </div>
-
 <div class="row">
   <div class="leftcolumn">
     <div class="card">
       <h2>Friend Builder</h2>
-      <h5>Title description, Dec 7, 2017</h5>
-      <div class="fakeimg" style="height:200px;">Image</div>
-      <p>Example Text</p>
-      <p>Example Text.</p>
+      <div class="tab">
+      	<button class="tablinks" onclick="openTab(event,'Description')" id="defaultOpen">Description</button>
+      	<button class="tablinks" onclick="openTab(event,'Instructions')">Instructions</button>
+      	<button class="tablinks" onclick="openTab(event,'Videos')">Videos</button>
+      </div>
+      <div id="Description" class="tabcontent">
+      <h3>Description</h3>
+      <p>I am a student new to a large university. This school is much larger than my high school and the community college I had attended previously and I'm finding the giant class sizes a little bit overwhelming. It was easy to make friends when there were only a few of us in the classroom, but it's much more difficult to make friends here since everyone seems to be so different. Fortunately for me, I had heard about this app called Friend_Builder that was designed specifically for people like me who might be a little bit shy at first. I simply download the app to my android phone, set up my profile by using my e-mail address and a login password. After I login I am prompted to answer a few questions about my interests. I am then connected to a bunch of people nearby with similar interests to mine. I can send messages to people to see if they'd be interested in meeting up for coffee or lunch. I can also rate people based on whether or not we hit it off or not. Overall I'm hoping that this app will allow me to connect with people who share the same academic interests and hobbies with me.</p>
+
+	<p>“I want to meet people near me who share my interests.”</p>
+
+	<p>“I want to find events to attend with people who share that interest.”</p>
+
+	<p>-Example: “Sometimes I need a gym buddy but feel uncomfortable walking up to random people.”</p>
+
+	<p>-Example: “Sometimes I want to play basketball but I don’t know if anyone is willing to play.”</p>
+
+	<p>“I want a way to keep in touch with those people, if I like them, and a way to cut contact with them, if I don’t like them.”</p>
+		</div>
+		<div id="Instructions" class="tabcontent">
+			<h3>Instructions</h3>
+			<ol>
+				<li>Download Android Studio (https://developer.android.com/studio/index.html)</li>
+				<li>In this Github repo, go to the develop branch.</li>
+				<li>Click the green "Clone or download" button in the develop branch and download the zip file.</li>
+				<li>Select the downloaded folder.</li>
+				<li>Click "Extract all".</li>
+				<li>For the destination of the files, choose the folder "Android Studio Projects" that was created when you installed Android Studio.</li>
+				<li>Open Android Studio.</li>
+				<li>Click File, then click Open. Find the "Android Studio Projects" folder. Click "Friend_Builder-develop". Click the subfolde "FriendBuilder". And select Okay.</li>
+				<li>If a message says "Project SDK not defined", click "setup sdk" in the message bar and select version 1.8.</li>
+				<li>Run the app by clicking the green sideways triangle button or selecting Run -> Run 'app' in the navigation bar.</li>
+				<li>If you haven't already created an Android emulator, click "Create New Virtual Device". The Nexus 5X should be fine on the default settings. Then choose to run the app on that new virtual device.</li>
+				<li>Once the device is running, you should be taken to a login screen.</li>
+				<li>For this prototype, use "Admin" as the email and "Admin" as the password to login.</li>
+				<li>Explore the App!</li>
+			</ol>
+		</div>
+		<div id="Videos" class="tabcontent">
+			<h2>Alpha</h2>
+			<iframe width="320" height="240" src="https://www.youtube.com/embed/yPqG_fLDOG4" allowfullscreen></iframe>
+			<h2>Prototype</h2>
+			<iframe width="320" height="240" src="https://www.youtube.com/embed/USB_l3tgsZs" allowfullscreen></iframe>
+
+		</div>
     </div>
   </div>
   <div class="rightcolumn">
     <div class="card">
       <h2>About</h2>
-      <div class="fakeimg" style="height:100px;">Image</div>
       <p>Team Randos</p>
+      <ul>
+      	<li>Brian</li>
+      	<li>Peter</li>
+      	<li>Wilson</li>
+      	<li>Justin</li>
+      </ul>
+      <img src="https://i.giphy.com/media/8quBFCLZNa1OgvcOJH/giphy.webp" alt="demo" height="100%" width="100%">
     </div>
   </div>
 </div>
 
 <div class="footer">
-  <h2>Footer</h2>
+  <h2>&copy;Team Randos - Brian, Peter, Wilson, Justyn</h2>
 </div>
+
+<script>
+function openTab(evt, infoName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(infoName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+
+document.getElementById("defaultOpen").click();
+</script>
+
 
 </body>
 </html>
