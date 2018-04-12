@@ -4,12 +4,25 @@
 # Project Description:
 Android app to help people who have similar interests connect and chat: Use GPS to locate and match similar interests (alternatively, have the user set up the info themselves and allow them to read the descriptions of other users in the vicinity)
 
-# Running the App in an Emulator:
+# See the App running:
 
-See the App running: 
+Alpha Release:
+a) https://www.youtube.com/watch?v=yPqG_fLDOG4
 
+Prototype:
 a) https://www.youtube.com/watch?v=USB_l3tgsZs&feature=youtu.be
+
 b) https://media.giphy.com/media/8quBFCLZNa1OgvcOJH/giphy.gif
+
+# Running the App Normally:
+
+1) Using an Android Device, click the APK file in the Master Branch to download the app.
+2) Allow the app to access your location when prompted.
+3) Create an account or login to an existing account.
+4) Explore the App!
+
+
+# Running the App as an Android Studio Project:
                      
 Instructions:
 
@@ -44,11 +57,12 @@ GPS based distance between users visible
 
 Users create events for others to see
 
-Users can hide from/ignore other users they don't like
+
 
 
 ## Add-on Features (if we get around to them):
 
+Users can hide from/ignore other users they don't like
 
 App gives recommendations to users based on user supplied interests
 
