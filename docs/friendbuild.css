@@ -128,3 +128,15 @@ body {
     from {opacity: 0;}
     to {opacity: 1;}
 }
+
+a{
+    text-decoration: none;
+    color:black;
+
+}
+a:hover{
+    text-decoration: none;
+}
+a:visited{
+    color: black;
+}
