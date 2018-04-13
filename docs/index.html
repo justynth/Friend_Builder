@@ -5,16 +5,16 @@
 
 </head>
 <body>
-<a href="index.html">
+<a href="index.html" id="heading">
 <div class="header">
   <h1>Friend Builder</h1>
 </div>
 </a>
 <div class="topnav">
   <a href="index.html">Home</a>
-  <a href="https://github.com/justynth/Friend_Builder/raw/master/app-debug.apk">Download</a>
+  <a href="https://github.com/justynth/Friend_Builder/raw/develop/app-debug.apk">Download apk</a>
   <a href="https://github.com/justynth/Friend_Builder/issues/new">Submit Issues</a>
-  <a href="#">Beta Testing Feedback Form</a>
+  <a href="https://github.com/justynth/Friend_Builder">Github Repo</a>
   <a href="https://gitter.im/Friend_Builder/Lobby?utm_source=ios&utm_medium=link&utm_campaign=ios-share-link" style="float:right">Contact</a>
 </div>
 <div class="row">
@@ -29,13 +29,20 @@
       <div id="Description" class="tabcontent">
       <h3>Description</h3>
       <p>The software provides a tool for users to interact and connect with other users using the same app. Descriptions and interests allow the current user of the phone to attract other users that are nearby with the same interests. A conversation can start as a result, starting the friend building process. Another way to attract users is to host events that nearby users can view and attend depending on the theme of the event. This allows for group friend building.</p>
-
 		</div>
+
 		<div id="Instructions" class="tabcontent">
 			<h3>Instructions</h3>
+      <p>Only Android versions 7.0 (Nougat, API 24) and later are supported. Using early versions may not enable all features.</p>
+       <div class="tab">
+        <button class="tablinks2" onclick="openTab2(event,'Technical')">For Technical Users</button>
+        <button class="tablinks2" onclick="openTab2(event,'NonTechnical')">For Non-Technical Users</button>
+      </div>
+
+      <div id="Technical" class="tabcontent2">
 			<ol>
-				<li>Download Android Studio (https://developer.android.com/studio/index.html)</li>
-				<li>In this Github repo, go to the develop branch.</li>
+				<li>Download Android Studio (<a href="https://developer.android.com/studio/index.html">https://developer.android.com/studio/index.html</a>)</li>
+				<li>Click on our Github Repo tab above to go to the develop branch.</li>
 				<li>Click the green "Clone or download" button in the develop branch and download the zip file.</li>
 				<li>Select the downloaded folder.</li>
 				<li>Click "Extract all".</li>
@@ -46,18 +53,37 @@
 				<li>Run the app by clicking the green sideways triangle button or selecting Run -> Run 'app' in the navigation bar.</li>
 				<li>If you haven't already created an Android emulator, click "Create New Virtual Device". The Nexus 5X should be fine on the default settings. Then choose to run the app on that new virtual device.</li>
 				<li>Once the device is running, you should be taken to a login screen.</li>
-				<li>For this prototype, use "Admin" as the email and "Admin" as the password to login.</li>
+				<li>Create an account then login!</li>
 				<li>Explore the App!</li>
 			</ol>
-		</div>
+    </div>
+    <div id="NonTechnical" class="tabcontent2">
+      <ol>
+        <li>If you don't have a Android phone you can download Android Studio (<a href="https://developer.android.com/studio/index.html">https://developer.android.com/studio/index.html</a>) for its emulator.</li>
+        <li>For the apk click on the download apk tab above to download apk file</li>
+        <li>Open Android Studio or use your Android phone.</li>
+        <li>if you are using a Android phone you can just run the apk file that you have just downloaded</li>
+        <li>For people who have downloaded Android Studio create a new project and Run the project by clicking the green sideways triangle button or selecting Run -> Run 'app' in the navigation bar if you haven't already created an Android emulator, click "Create New Virtual Device". The Nexus 5X should be fine on the default settings. Then choose to run the app on that new virtual device.</li>
+        <li>Once the device is running, and you have downloaded the apk you can then run the app</li>
+        <li>For people using the emulator you can drag the apk to the emulator that you have just created to run the app.</li>
+        <li>Create an account then login!</li>
+        <li>Explore the App!</li>
+      </ol>
+    </div>
+</div>
+
 		<div id="Videos" class="tabcontent">
+      <h2>Beta</h2>
+      <iframe width="320" height="240" src="https://www.youtube.com/embed/jt-jiCDJ09c" allowfullscreen></iframe>
 			<h2>Alpha</h2>
 			<iframe width="320" height="240" src="https://www.youtube.com/embed/yPqG_fLDOG4" allowfullscreen></iframe>
 			<h2>Prototype</h2>
 			<iframe width="320" height="240" src="https://www.youtube.com/embed/USB_l3tgsZs" allowfullscreen></iframe>
 
 		</div>
+
     </div>
+
   </div>
   <div class="rightcolumn">
     <div class="card">
@@ -86,6 +112,20 @@ function openTab(evt, infoName) {
         tabcontent[i].style.display = "none";
     }
     tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(infoName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+
+function openTab2(evt, infoName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent2");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks2");
     for (i = 0; i < tablinks.length; i++) {
         tablinks[i].className = tablinks[i].className.replace(" active", "");
     }
