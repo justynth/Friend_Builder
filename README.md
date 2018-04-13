@@ -1,13 +1,22 @@
 # Friend_Builder
 
+# Landing Page:
+
+https://justynth.github.io/Friend_Builder/
 
 # Project Description:
 Android app to help people who have similar interests connect and chat: Use GPS to locate and match similar interests (alternatively, have the user set up the info themselves and allow them to read the descriptions of other users in the vicinity)
 
-# Landing page
-https://justynth.github.io/Friend_Builder/
+
+# Android Version Requirements
+
+Only Android versions 7.0 (Nougat, API 24) and later are supported.  Using early versions may not enable all features.
+
 
 # See the App running:
+
+Beta Release:
+a) https://www.youtube.com/watch?v=jt-jiCDJ09c
 
 Alpha Release:
 a) https://www.youtube.com/watch?v=yPqG_fLDOG4
