@@ -1,0 +1,29 @@
+Team Randos
+Meeting Minutes
+April 16,2018
+
+Meeting Time: 4pm- 5pm
+
+Present: Peter, Brian, Wilson, Justyn (Online)
+
+Absent:None 
+
+
+Talked About:
+     Our app presentation to CSE113/115 kids this thursday morning at 8am - 10am at baldy 21. 
+     Went over what we plan to do for our presentation (google slides, group collaboration).
+
+Completed Since Last Meeting:
+
+Wilson: Edited nearbyuserlist.xml, limited characters for interests field, fixed end button bug, and fixed landscape crash. (#130, #131, #111, #120)
+Peter: Created Landing page and content (#113 and #114)
+Brian: Sort Nearby by distance (#126), YouTube video
+Justyn: Created Help Wanted Issue. Worked on troubleshooting issue #120.
+
+
+To do by next meeting (Monday):
+Wilson: Work on slides for presentation next week (google slides) #143
+Peter: fix any bugs that appear. Check on lower api compatibility. (#127) help on slides for presentation. 
+Brian: Help with slides
+Justyn: Prepare for Thursday CSE 100-level presentation. Test for bugs within app.
+
