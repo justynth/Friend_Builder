@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="4dp"
             android:text="edit"
             android:textSize="10sp"
             android:visibility="invisible"
@@ -72,8 +72,7 @@
             android:id="@+id/description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="20dp"
             android:visibility="invisible"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/descriptionHeader" />
@@ -95,8 +94,8 @@
             android:layout_width="275dp"
             android:layout_height="86dp"
             android:layout_marginTop="4dp"
-            android:hint="Description"
             android:ems="10"
+            android:hint="Description"
             android:inputType="textMultiLine"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/descriptionHeader"
@@ -106,47 +105,87 @@
             android:id="@+id/interestsHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:text=" Interests"
             android:visibility="invisible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/description" />
 
-        <TextView
-            android:id="@+id/i0"
-            android:layout_width="wrap_content"
+        <TableLayout
+            android:layout_width="368dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="16dp"
-            android:maxLength="15"
-            android:text=""
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/interestsHeader" />
+            android:layout_marginTop="16dp"
+            android:stretchColumns="*"
+            app:layout_constraintTop_toBottomOf="@+id/interestsHeader"
+            tools:layout_editor_absoluteX="8dp">
 
-        <TextView
-            android:id="@+id/i1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="16dp"
-            android:maxLength="15"
-            android:text=""
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/i0" />
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
 
-        <TextView
-            android:id="@+id/i2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="16dp"
-            android:maxLength="15"
-            android:text=""
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/i1" />
+                >
+
+                <TextView
+                    android:id="@+id/i0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@android:color/holo_purple"
+                    android:maxLength="15"
+                    android:padding="20dp"
+                    android:text=""
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/interestsHeader" />
+
+                <TextView
+                    android:id="@+id/i1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@android:color/holo_orange_light"
+                    android:maxLength="15"
+                    android:padding="20dp"
+                    android:text=""
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/i0" />
+
+                <TextView
+                    android:id="@+id/i2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@android:color/holo_green_light"
+                    android:maxLength="15"
+                    android:padding="20dp"
+                    android:text=""
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/i1" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </TableLayout>
 
         <EditText
             android:id="@+id/editInterest0"
@@ -165,8 +204,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:hint="Interest 2"
             android:ems="10"
+            android:hint="Interest 2"
             android:inputType="textPersonName"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/editInterest2"
@@ -177,13 +216,20 @@
             android:id="@+id/editInterest2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Interest 3"
             android:ems="10"
+            android:hint="Interest 3"
             android:inputType="textPersonName"
             android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editInterest1" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="192dp" />
 
     </android.support.constraint.ConstraintLayout>
 
@@ -254,4 +300,5 @@
             app:layout_constraintVertical_bias="0.666" />
 
     </android.support.constraint.ConstraintLayout>
+
 </android.support.constraint.ConstraintLayout>
