@@ -207,6 +207,7 @@ public class EventActivity extends AppCompatActivity {
 
                                     Button end = dialogEventDetails.findViewById(R.id.end);
                                     if (!hostedEvent.isActive()) end.setVisibility(View.GONE);
+                                    else end.setVisibility(View.VISIBLE);
 
 
                                     //Button end = dialogEventDetails.findViewById(R.id.endEvent);
