@@ -1,0 +1,35 @@
+Team Randos
+Meeting Minutes
+April 23,2018
+
+Meeting Time: 10am- 11am online
+
+Present: Peter, Brian, Wilson, Justyn
+
+Absent:None 
+
+
+Talked About:
+     Went over what we plan to do for our presentation (google slides, group collaboration).
+     Decided to present on May 7th.
+
+
+Completed Since Last Meeting:
+
+Wilson: Started slides but Justyn seems to have done a lot. (#143)
+Peter: Did presentation to CSE115 kids. 
+Brian: Maybe fixed edit location bug (#156)
+Justyn: Began working on Profile Picture feature (#154)(#155). Began working on slides for final presentation.(#143)
+
+By Wednesday:
+Wilson: Fix bugs (#151) (#159 isn’t major but will look into it)
+Justyn: Continue working on slides.
+Peter: help on slides. (#143)
+
+To do by next meeting (Monday):
+Wilson: Be ready to present. Look through feature requests and implement the possible ones.
+Peter: fix any bugs that appear. Check on lower api compatibility. (#127) help on slides for presentation.
+Brian: Help with slides
+Justyn: Finish slides for final presentation. Complete profile picture feature. Look into login bug #159. Also look into creating times for events #150.
+
+
