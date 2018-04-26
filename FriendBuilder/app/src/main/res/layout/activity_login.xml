@@ -78,6 +78,21 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/descriptionHeader" />
 
+        <TextView
+            android:id="@+id/emailAuthMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:visibility="invisible"
+            android:textSize="20sp"
+            android:text="Please click the link sent to your inbox to authenticate your email address!"
+            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"  />
+
+
         <Button
             android:id="@+id/usersNearMe"
             android:layout_width="wrap_content"
