@@ -206,8 +206,13 @@ public class EventActivity extends AppCompatActivity {
                                     else active.setText("Inactive");
 
                                     Button end = dialogEventDetails.findViewById(R.id.end);
-                                    if (!hostedEvent.isActive()) end.setVisibility(View.GONE);
-                                    else end.setVisibility(View.VISIBLE);
+                                    if (getIntent().getBundleExtra("user").getBoolean("current") == true) {
+                                        if (!hostedEvent.isActive()) end.setVisibility(View.GONE);
+                                        else end.setVisibility(View.VISIBLE);
+                                    }
+                                    else end.setVisibility(View.GONE);
+
+
 
 
                                     //Button end = dialogEventDetails.findViewById(R.id.endEvent);
