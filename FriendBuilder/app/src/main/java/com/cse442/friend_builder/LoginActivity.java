@@ -31,6 +31,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static com.firebase.ui.auth.AuthUI.getInstance;
+
 public class LoginActivity extends AppCompatActivity {
     /*new code*/
     private LoginActivity context;
@@ -90,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.eventsNearMe).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AuthUI.getInstance().signOut(context);
+                getInstance().signOut(context);
             }
         });
     }
@@ -257,6 +259,7 @@ public class LoginActivity extends AppCompatActivity {
                                     loc = "Not Found";
                                     found = false;
                                     currentUser = new Current(email, name, "I have not customized my profile yet and I have the default location.", 0, 0);
+
                                 }
 
 
@@ -347,59 +350,10 @@ public class LoginActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         description.setText(removeComma(editDescription.getText().toString()));
                         nameView.setText(removeComma(editName.getText().toString()));
-                        ArrayList<Event> temp = new ArrayList<>();
-                        //temp.add(new HostedEvent(userName, "SSB4", "Competition", null, null, null, false));
 
-                        LocationManager manager = (LocationManager) context.getSystemService(context.LOCATION_SERVICE);
-                        String provider = LocationManager.GPS_PROVIDER;
+                        currentUser = new Current(email, removeComma(editName.getText().toString()), removeComma(editDescription.getText().toString()), currentUser.getLat(), currentUser.getLon());
+                        System.out.println(currentUser);
 
-
-                        // Define a listener that responds to location updates
-                        LocationListener listener = new LocationListener() {
-                            public void onLocationChanged(Location location) {
-                                // Called when a new location is found by the network location provider.
-                                userplace = location;
-                            }
-
-                            public void onStatusChanged(String provider, int status, Bundle extras) {
-                            }
-
-                            public void onProviderEnabled(String provider) {
-                            }
-
-                            public void onProviderDisabled(String provider) {
-                            }
-                        };
-
-                        String loc = "";
-
-                        try {
-                            if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                // TODO: Consider calling
-                                //    ActivityCompat#requestPermissions
-                                // here to request the missing permissions, and then overriding
-                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                //                                          int[] grantResults)
-                                // to handle the case where the user grants the permission. See the documentation
-                                // for ActivityCompat#requestPermissions for more details.
-                                return;
-                            }
-                            manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
-                        }
-                        catch(NullPointerException e)
-                        {
-                            loc = "Searching...";
-                        }
-
-                        try{
-                            userplace = manager.getLastKnownLocation(provider);
-                        }
-                        catch (NullPointerException n)
-                        {
-                            loc = "Not Found";
-                        }
-
-                        currentUser = new Current(email, removeComma(editName.getText().toString()), removeComma(editDescription.getText().toString()), userplace.getLatitude(), userplace.getLongitude());
                         currentUser.setInterest0(removeComma(editInterest0.getText().toString()));
                         currentUser.setInterest1(removeComma(editInterest1.getText().toString()));
                         currentUser.setInterest2(removeComma(editInterest2.getText().toString()));
@@ -483,8 +437,8 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(editProfile.getText().toString()=="edit") {
-            AuthUI.getInstance().signOut(context);
+        if(editProfile.getText().toString().equals("edit")) {
+            getInstance().signOut(context);
         }
     }
 }
