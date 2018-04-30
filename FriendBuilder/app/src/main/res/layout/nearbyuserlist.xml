@@ -9,9 +9,23 @@
         android:id="@+id/linearLayout"
         android:layout_width="224dp"
         android:layout_height="155dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:orientation="vertical"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="21dp">
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/bigpic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/emptyprofile" />
+
+        <ImageView
+            android:id="@+id/otherpic"
+            android:layout_width="54dp"
+            android:layout_height="42dp"
+            app:srcCompat="@drawable/emptyprofile" />
 
         <TextView
             android:id="@+id/username"
@@ -35,9 +49,9 @@
                 android:id="@+id/distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="end"
                 android:layout_weight="1"
-                android:textAlignment="textEnd"
-                android:layout_gravity="end"/>
+                android:textAlignment="textEnd" />
 
             <TextView
                 android:id="@+id/descriptionDetails"
@@ -80,20 +94,26 @@
 
     <Button
         android:id="@+id/button2"
-        android:layout_width="94dp"
+        android:layout_width="0dp"
         android:layout_height="38dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:text="Chat"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/linearLayout"
-        tools:layout_editor_absoluteY="21dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/button3"
-        android:layout_width="94dp"
+        android:layout_width="0dp"
         android:layout_height="38dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:text="events"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/linearLayout"
         app:layout_constraintTop_toBottomOf="@+id/button2" />
+
 </android.support.constraint.ConstraintLayout>
