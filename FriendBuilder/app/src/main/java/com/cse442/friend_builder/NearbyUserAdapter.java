@@ -5,14 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.ActivityChooserView;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+
 
 /**
  * Created by Brian on 2/17/2018.
@@ -38,13 +41,15 @@ class NearbyUserAdapter extends ArrayAdapter<String> {
 
 
         TextView u = (TextView) row.findViewById(R.id.username);
-        TextView d = (TextView) row.findViewById(R.id.description);
-        TextView i1 = (TextView) row.findViewById(R.id.interest1);
-        TextView i2 = (TextView) row.findViewById(R.id.interest2);
-        TextView i3 = (TextView) row.findViewById(R.id.interest3);
-        TextView dis = (TextView) row.findViewById(R.id.distance);
+        final TextView d = (TextView) row.findViewById(R.id.description);
+        final TextView i1 = (TextView) row.findViewById(R.id.interest1);
+        final TextView i2 = (TextView) row.findViewById(R.id.interest2);
+        final TextView i3 = (TextView) row.findViewById(R.id.interest3);
+        final TextView dis = (TextView) row.findViewById(R.id.distance);
         Button b1 = (Button) row.findViewById(R.id.button2);
         Button b2 = row.findViewById(R.id.button3);
+        final ImageView pic = row.findViewById(R.id.otherpic);
+        final ImageView bigpic = row.findViewById(R.id.bigpic);
 
         final String myName = user[0];
         u.setText(user[1]);
@@ -91,6 +96,32 @@ class NearbyUserAdapter extends ArrayAdapter<String> {
                 ((Activity)view.getContext()).finish();
             }
         });
+
+        pic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                d.setVisibility(View.GONE);
+                i1.setVisibility(View.GONE);
+                i2.setVisibility(View.GONE);
+                i3.setVisibility(View.GONE);
+                pic.setVisibility(View.GONE);
+                bigpic.setVisibility(View.VISIBLE);
+
+                bigpic.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        bigpic.setVisibility(View.GONE);
+                        d.setVisibility(View.VISIBLE);
+                        i1.setVisibility(View.VISIBLE);
+                        i2.setVisibility(View.VISIBLE);
+                        i3.setVisibility(View.VISIBLE);
+                        pic.setVisibility(View.VISIBLE);
+                    }
+                });
+            }
+        });
+
         return row;
     }
 }
