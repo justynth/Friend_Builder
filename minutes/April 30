@@ -1,0 +1,60 @@
+Team Randos
+Meeting Minutes
+April 30,2018
+
+Meeting Time: 10am- 11am
+
+Present: Peter, Brian, Justyn
+
+Absent: Wilson
+
+
+Talked About:
+    
+Which 100 level suggestion to implement.
+
+Options:
+
+User can add a picture to an event.  
+Users can join others events.
+User profile contains picture. *
+Sort users by interest.
+Send pictures via chat.  (already suggested)
+See whether someone has read message. *
+Button on main page that takes you to all messages you have.  *
+
+If pick 7.
+
+Tasks for 7:
+Add button to profile screen.
+Create Page for person’s chats.
+Create Adapter to show list of chats.
+Get chats from database.
+
+If pick 3.
+
+Tasks for 3:
+Add image button to profile screen so that image can be uploaded.
+Create way to upload picture from phone under edit profile activity.
+Add image to database.
+Retrieve profile images from database when you go to nearby user screen.
+Add image buttons in nearby user screen to display pictures.
+(optional) if we want to display profile picture in chat screen.
+(might need) Add permission request to access picture gallery
+Add image field to User and Current class
+
+We decided to go with 3.
+
+Completed Since Last Meeting:
+
+Wilson: 
+Peter: Looked into presentation (#143)
+Brian: Fixed edit location bug (#156)
+Justyn: Still working on Profile Picture feature (#154)(#155) (Added image to profile screen so that image can be uploaded, working on uploading picture from edit profile activity). Finished working on slides for final presentation.(#143)
+
+
+To do by next meeting (Monday):
+Wilson: 
+Peter: fix any bugs that appear. help on slides for presentation.(#143) implement a beta testing feature from cse115 students. 3c. 
+Brian: 3d, 3e; Youtube video for Official Release
+Justyn: Complete profile picture feature. Specifically create way to upload picture from phone so that it can be added to database. 3A, 3B, 3C
