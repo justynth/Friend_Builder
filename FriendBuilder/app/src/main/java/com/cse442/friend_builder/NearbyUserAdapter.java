@@ -3,7 +3,11 @@ package com.cse442.friend_builder;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.ActivityChooserView;
 import android.text.Layout;
 import android.view.LayoutInflater;
@@ -16,6 +20,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
+
+
 
 /**
  * Created by Brian on 2/17/2018.
@@ -24,6 +35,8 @@ import android.widget.TextView;
 class NearbyUserAdapter extends ArrayAdapter<String> {
     private Button b1;
     private int _position;
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
+    private Uri filePath;
     NearbyUserAdapter(Context context, String[] users){
 
         super(context, R.layout.nearbyuserlist, users);
@@ -59,6 +72,24 @@ class NearbyUserAdapter extends ArrayAdapter<String> {
         i1.setText(user[5]);
         i2.setText(user[6]);
         i3.setText(user[7]);
+
+        String path = "profile/" + email  +".png";
+        StorageReference storageRef = storage.getReference();
+        storageRef.child(path).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Picasso.get().load(uri).resize(125,125).centerCrop().into(pic);
+                Picasso.get().load(uri).resize(500,500).centerCrop().into(bigpic);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any error
+                String path = "https://firebasestorage.googleapis.com/v0/b/friendbuilder-336e6.appspot.com/o/profile%2Femptyprofile.png?alt=media&token=2d8a834b-64c7-490b-985b-ae932f134c33";
+                Picasso.get().load(path).resize(125,125).centerCrop().into(pic);
+                Picasso.get().load(path).resize(500,500).centerCrop().into(bigpic);
+            }
+        });
 
 
         b2.setOnClickListener(new View.OnClickListener() {
