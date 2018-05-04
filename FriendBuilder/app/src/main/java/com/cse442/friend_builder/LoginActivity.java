@@ -44,6 +44,9 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import android.util.Log; //New for authentication email
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import static com.firebase.ui.auth.AuthUI.getInstance;
 
@@ -84,6 +87,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private Location userplace;
     private boolean found;
+    private boolean emailIsVerified;
+    private TextView emailAuthMessage;
+    private static final String TAG = "LoginActivity";
 
     public static final int GET_FROM_GALLERY = 3;
     private SharedPreferences editor;
@@ -172,6 +178,7 @@ public class LoginActivity extends AppCompatActivity {
         userNameReference = database.getReference().child("UserNames").child("University At Buffalo");
         userReference = database.getReference().child("User").child("University At Buffalo");
 
+        emailAuthMessage = findViewById(R.id.emailAuthMessage);
         description = findViewById(R.id.description);
         nameView = findViewById(R.id.username);
         editProfile = findViewById(R.id.editProfile);
@@ -187,6 +194,7 @@ public class LoginActivity extends AppCompatActivity {
         editInterest1 = findViewById(R.id.editInterest1);
         editInterest2 = findViewById(R.id.editInterest2);
         profileImage = findViewById(R.id.imageBut);
+        emailAuthMessage.setVisibility(View.INVISIBLE);
     }
 
     private void setEverythingExceptPicAndName(int visibility) {
@@ -235,107 +243,141 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     });
 
-                    userReference.child(removeInvalidKeyCharacters(email)).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            //Toast.makeText(context, ""+(dataSnapshot.exists()), Toast.LENGTH_SHORT).show();
-                            if (!dataSnapshot.exists()) {
-                                //need user to sign up username
+                    emailIsVerified=user.isEmailVerified();
+
+                    if(emailIsVerified){
+                        emailAuthMessage.setVisibility(View.INVISIBLE); //Hide email auth message when authenticated
+                        userReference.child(removeInvalidKeyCharacters(email)).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                //Toast.makeText(context, ""+(dataSnapshot.exists()), Toast.LENGTH_SHORT).show();
+                                if (!dataSnapshot.exists()) {
+                                    //need user to sign up username
 
 
 
-                                LocationManager manager = (LocationManager) context.getSystemService(context.LOCATION_SERVICE);
-                                String provider = LocationManager.GPS_PROVIDER;
+                                    LocationManager manager = (LocationManager) context.getSystemService(context.LOCATION_SERVICE);
+                                    String provider = LocationManager.GPS_PROVIDER;
 
 
-                                // Define a listener that responds to location updates
-                                LocationListener listener = new LocationListener() {
-                                    public void onLocationChanged(Location location) {
-                                        // Called when a new location is found by the network location provider.
-                                        userplace = location;
+                                    // Define a listener that responds to location updates
+                                    LocationListener listener = new LocationListener() {
+                                        public void onLocationChanged(Location location) {
+                                            // Called when a new location is found by the network location provider.
+                                            userplace = location;
+                                        }
+
+                                        public void onStatusChanged(String provider, int status, Bundle extras) {
+                                        }
+
+                                        public void onProviderEnabled(String provider) {
+                                        }
+
+                                        public void onProviderDisabled(String provider) {
+                                        }
+                                    };
+
+                                    String loc = "";
+
+                                    try {
+                                        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                            // TODO: Consider calling
+                                            //    ActivityCompat#requestPermissions
+                                            // here to request the missing permissions, and then overriding
+                                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                            //                                          int[] grantResults)
+                                            // to handle the case where the user grants the permission. See the documentation
+                                            // for ActivityCompat#requestPermissions for more details.
+                                            return;
+                                        }
+                                        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
+                                    }
+                                    catch(NullPointerException e)
+                                    {
+                                        loc = "Searching...";
                                     }
 
-                                    public void onStatusChanged(String provider, int status, Bundle extras) {
+                                    try{
+                                        userplace = manager.getLastKnownLocation(provider);
+                                        currentUser = new Current(email, name, "I have not customized my profile yet.", userplace.getLatitude(), userplace.getLongitude());
+                                    }
+                                    catch (NullPointerException n)
+                                    {
+                                        loc = "Not Found";
+                                        found = false;
+                                        currentUser = new Current(email, name, "I have not customized my profile yet and I have the default location.", 0, 0);
                                     }
 
-                                    public void onProviderEnabled(String provider) {
-                                    }
 
-                                    public void onProviderDisabled(String provider) {
-                                    }
-                                };
+                                    userReference.child(removeInvalidKeyCharacters(email)).setValue(currentUser);
+                                    setEverythingExceptPicAndName(View.VISIBLE);
+                                    //setUserNameCreation(View.VISIBLE);
+                                } else {
+                                    userReference.child(removeInvalidKeyCharacters(email)).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            currentUser = dataSnapshot.getValue(Current.class);
+                                            nameView.setText(currentUser.getName());
+                                            description.setText(currentUser.getDescription());
+                                            interest0.setText(currentUser.getInterest0());
+                                            interest1.setText(currentUser.getInterest1());
+                                            interest2.setText(currentUser.getInterest2());
+                                            setEverythingExceptPicAndName(View.VISIBLE);
+                                        }
 
-                                String loc = "";
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
 
-                                try {
-                                    if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                        // TODO: Consider calling
-                                        //    ActivityCompat#requestPermissions
-                                        // here to request the missing permissions, and then overriding
-                                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                        //                                          int[] grantResults)
-                                        // to handle the case where the user grants the permission. See the documentation
-                                        // for ActivityCompat#requestPermissions for more details.
-                                        return;
-                                    }
-                                    manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
+                                        }
+                                    });
+                                    //currentUser = dataSnapshot.getValue(Current.class);
+                                    //userName = null;
+                                    //nameView.setText(dataSnapshot.getKey());
+                                    //setEverythingExceptPicAndName(View.VISIBLE); //as they are already visible
                                 }
-                                catch(NullPointerException e)
-                                {
-                                    loc = "Searching...";
-                                }
 
-                                try{
-                                    userplace = manager.getLastKnownLocation(provider);
-                                    currentUser = new Current(email, name, "I have not customized my profile yet.", userplace.getLatitude(), userplace.getLongitude());
-                                }
-                                catch (NullPointerException n)
-                                {
-                                    loc = "Not Found";
-                                    found = false;
-                                    currentUser = new Current(email, name, "I have not customized my profile yet and I have the default location.", 0, 0);
-
-                                }
-
-
-                                userReference.child(removeInvalidKeyCharacters(email)).setValue(currentUser);
-                                setEverythingExceptPicAndName(View.VISIBLE);
-                                //setUserNameCreation(View.VISIBLE);
-                            } else {
-                                userReference.child(removeInvalidKeyCharacters(email)).addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        currentUser = dataSnapshot.getValue(Current.class);
-                                        nameView.setText(currentUser.getName());
-                                        description.setText(currentUser.getDescription());
-                                        interest0.setText(currentUser.getInterest0());
-                                        interest1.setText(currentUser.getInterest1());
-                                        interest2.setText(currentUser.getInterest2());
-                                        setEverythingExceptPicAndName(View.VISIBLE);
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                });
-                                //currentUser = dataSnapshot.getValue(Current.class);
-                                //userName = null;
-                                //nameView.setText(dataSnapshot.getKey());
-                                //setEverythingExceptPicAndName(View.VISIBLE); //as they are already visible
                             }
 
-                        }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                            }
+                        });
 
-                        }
-                    });
+                    }
+                    else{
+                        //Logged in but email is not verified
+                        //Load the correct components (background + message + logoutButton
+
+
+                        //Make email auth text box and logout button appear
+                        emailAuthMessage.setVisibility(View.VISIBLE);
+                        eventsNearMe.setVisibility(View.VISIBLE);
+
+
+
+
+                        //Send email
+                        user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    Log.d(TAG, "You sent an email!");
+
+                                }
+                            }
+                        });
+
+                    }
+
+
+
+
 
 
                     //loadDataForCurrentUser();
-                } else {
+                }
+                else {
                     nameView.setText("");
                     setEverythingExceptPicAndName(View.INVISIBLE);
                     //initializeSignOut();
@@ -351,8 +393,6 @@ public class LoginActivity extends AppCompatActivity {
                     //ask for GPS permissions
                     //}
                 }
-
-                //finish();
 
             }
         };
