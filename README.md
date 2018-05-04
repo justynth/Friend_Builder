@@ -15,6 +15,9 @@ Only Android versions 7.0 (Nougat, API 24) and later are supported.  Using early
 
 # See the App running:
 
+Official Release:
+a) https://youtu.be/UJ5HcsQl5t8
+
 Beta Release:
 a) https://www.youtube.com/watch?v=jt-jiCDJ09c
 
