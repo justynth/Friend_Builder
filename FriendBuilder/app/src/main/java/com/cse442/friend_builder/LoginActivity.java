@@ -3,23 +3,32 @@ package com.cse442.friend_builder;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.cse442.friend_builder.model.Current;
-import com.cse442.friend_builder.model.Event;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -27,14 +36,22 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
+
+import static com.firebase.ui.auth.AuthUI.getInstance;
 
 public class LoginActivity extends AppCompatActivity {
     /*new code*/
     private LoginActivity context;
-
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
+    private Uri filePath;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
@@ -46,6 +63,7 @@ public class LoginActivity extends AppCompatActivity {
     private String email; //initialized by listener
     private String name; //initialized by listener
     private Current currentUser;
+    private String storageRef;
 
     private TextView description;
     private TextView nameView;
@@ -57,6 +75,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText editInterest0;
     private EditText editInterest1;
     private EditText editInterest2;
+    private ImageButton profileImage;
 
     private Button editProfile;
     private Button myEvents;
@@ -66,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
     private Location userplace;
     private boolean found;
 
-
+    public static final int GET_FROM_GALLERY = 3;
     private SharedPreferences editor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.eventsNearMe).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AuthUI.getInstance().signOut(context);
+                getInstance().signOut(context);
             }
         });
     }
@@ -167,6 +186,7 @@ public class LoginActivity extends AppCompatActivity {
         editInterest0 = findViewById(R.id.editInterest0);
         editInterest1 = findViewById(R.id.editInterest1);
         editInterest2 = findViewById(R.id.editInterest2);
+        profileImage = findViewById(R.id.imageBut);
     }
 
     private void setEverythingExceptPicAndName(int visibility) {
@@ -189,6 +209,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
+                FirebaseStorage storage = FirebaseStorage.getInstance();
                 //Toast.makeText(context, "Called", Toast.LENGTH_SHORT).show();
                 if (loggedIn(user)) {
                     //initializeSignIn();
@@ -197,6 +218,22 @@ public class LoginActivity extends AppCompatActivity {
                     name = user.getDisplayName();
 
                     email = user.getEmail();
+
+                    String path = "profile/" + removeInvalidKeyCharacters(email)  +".png";
+                    StorageReference storageRef = storage.getReference();
+                    storageRef.child(path).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Picasso.get().load(uri).resize(125,125).centerCrop().into(profileImage);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Handle any errors
+                            String path = "https://firebasestorage.googleapis.com/v0/b/friendbuilder-336e6.appspot.com/o/profile%2Femptyprofile.png?alt=media&token=2d8a834b-64c7-490b-985b-ae932f134c33";
+                            Picasso.get().load(path).resize(125,125).centerCrop().into(profileImage);
+                        }
+                    });
 
                     userReference.child(removeInvalidKeyCharacters(email)).addValueEventListener(new ValueEventListener() {
                         @Override
@@ -257,6 +294,7 @@ public class LoginActivity extends AppCompatActivity {
                                     loc = "Not Found";
                                     found = false;
                                     currentUser = new Current(email, name, "I have not customized my profile yet and I have the default location.", 0, 0);
+
                                 }
 
 
@@ -320,6 +358,7 @@ public class LoginActivity extends AppCompatActivity {
         };
     }
 
+
     private void addButtonListeners() {
         editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -347,59 +386,10 @@ public class LoginActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         description.setText(removeComma(editDescription.getText().toString()));
                         nameView.setText(removeComma(editName.getText().toString()));
-                        ArrayList<Event> temp = new ArrayList<>();
-                        //temp.add(new HostedEvent(userName, "SSB4", "Competition", null, null, null, false));
 
-                        LocationManager manager = (LocationManager) context.getSystemService(context.LOCATION_SERVICE);
-                        String provider = LocationManager.GPS_PROVIDER;
+                        currentUser = new Current(email, removeComma(editName.getText().toString()), removeComma(editDescription.getText().toString()), currentUser.getLat(), currentUser.getLon());
+                        System.out.println(currentUser);
 
-
-                        // Define a listener that responds to location updates
-                        LocationListener listener = new LocationListener() {
-                            public void onLocationChanged(Location location) {
-                                // Called when a new location is found by the network location provider.
-                                userplace = location;
-                            }
-
-                            public void onStatusChanged(String provider, int status, Bundle extras) {
-                            }
-
-                            public void onProviderEnabled(String provider) {
-                            }
-
-                            public void onProviderDisabled(String provider) {
-                            }
-                        };
-
-                        String loc = "";
-
-                        try {
-                            if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                // TODO: Consider calling
-                                //    ActivityCompat#requestPermissions
-                                // here to request the missing permissions, and then overriding
-                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                //                                          int[] grantResults)
-                                // to handle the case where the user grants the permission. See the documentation
-                                // for ActivityCompat#requestPermissions for more details.
-                                return;
-                            }
-                            manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
-                        }
-                        catch(NullPointerException e)
-                        {
-                            loc = "Searching...";
-                        }
-
-                        try{
-                            userplace = manager.getLastKnownLocation(provider);
-                        }
-                        catch (NullPointerException n)
-                        {
-                            loc = "Not Found";
-                        }
-
-                        currentUser = new Current(email, removeComma(editName.getText().toString()), removeComma(editDescription.getText().toString()), userplace.getLatitude(), userplace.getLongitude());
                         currentUser.setInterest0(removeComma(editInterest0.getText().toString()));
                         currentUser.setInterest1(removeComma(editInterest1.getText().toString()));
                         currentUser.setInterest2(removeComma(editInterest2.getText().toString()));
@@ -450,6 +440,12 @@ public class LoginActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        profileImage.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view){
+                startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), GET_FROM_GALLERY);
+            }
+        });
     }
 
     @Override
@@ -457,13 +453,42 @@ public class LoginActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-                //Toast.makeText(context, "Welcome!", Toast.LENGTH_SHORT).show();
+
             }
             else if (resultCode == RESULT_CANCELED) {
                 //Toast.makeText(context, "Cancelled!", Toast.LENGTH_SHORT).show();
                 finish();
             }
+        }else if(requestCode == GET_FROM_GALLERY && resultCode == RESULT_OK) {
+            filePath = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                uploadImage();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+    private void uploadImage(){
+        String path ="profile/" + removeInvalidKeyCharacters(email) + ".png";
+        StorageReference storageRef = storage.getReference(path);
+        UploadTask uploadTask = storageRef.putFile(filePath);
+
+// Register observers to listen for when the download is done or if it fails
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                Picasso.get().load(downloadUrl).resize(125,125).centerCrop().into(profileImage);
+            }
+        });
     }
 
     /*new method*/
@@ -483,8 +508,8 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(editProfile.getText().toString()=="edit") {
-            AuthUI.getInstance().signOut(context);
+        if(editProfile.getText().toString().equals("edit")) {
+            getInstance().signOut(context);
         }
     }
 }
