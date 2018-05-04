@@ -3,9 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/FriendBuilder.iml" filepath="$PROJECT_DIR$/FriendBuilder.iml" />
-      <module fileurl="file://C:\Users\PeterYang\Downloads\Friend_Builder-ProfilePic\Friend_Builder-ProfilePic\FriendBuilder\FriendBuilder.iml" filepath="C:\Users\PeterYang\Downloads\Friend_Builder-ProfilePic\Friend_Builder-ProfilePic\FriendBuilder\FriendBuilder.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\PeterYang\Downloads\Friend_Builder-ProfilePic\Friend_Builder-ProfilePic\FriendBuilder\app\app.iml" filepath="C:\Users\PeterYang\Downloads\Friend_Builder-ProfilePic\Friend_Builder-ProfilePic\FriendBuilder\app\app.iml" />
     </modules>
   </component>
 </project>
