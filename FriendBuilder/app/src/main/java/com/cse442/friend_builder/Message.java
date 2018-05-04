@@ -200,4 +200,10 @@ public class Message extends AppCompatActivity implements View.OnClickListener {
         }
         return true;
     }
+    @Override
+    public void onBackPressed() {
+        Intent setIntent = new Intent(this,NearbyActivity.class);
+        startActivity(setIntent);
+        finish();
+    }
 }

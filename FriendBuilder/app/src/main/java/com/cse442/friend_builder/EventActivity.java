@@ -66,6 +66,7 @@ public class EventActivity extends AppCompatActivity {
     private static LinearLayout attendedEventsList;
     private EditText eventName;
     private EditText eventTheme;
+    private EditText describeLocation;
     private Button submit;
     private View dialogView;
     private View dialogEventDetails;
@@ -79,11 +80,23 @@ public class EventActivity extends AppCompatActivity {
     private DatabaseReference eventReference;
 
     private String email;
+    private String name;
+
+    private boolean validInput(String s) {
+        if (s.length() == 0) return false;
+        int spaceCount = 0;
+        for (int i = 0; i < s.length(); ++i) {
+            if (s.charAt(i) == ' ') spaceCount++;
+        }
+        if (spaceCount == s.length()) return false;
+        return true;
+    }
 
     private void initializeInstanceVariables() {
         context = this;
 
         email = getIntent().getBundleExtra("user").getString("user");
+        name = getIntent().getBundleExtra("user").getString("name");
 
         database = FirebaseDatabase.getInstance();
         eventReference = database.getReference().child("Events").child("University At Buffalo");
@@ -102,23 +115,32 @@ public class EventActivity extends AppCompatActivity {
 
         eventName = dialogView.findViewById(R.id.eventName);
         eventTheme = dialogView.findViewById(R.id.eventTheme);
+        describeLocation = dialogView.findViewById(R.id.describeLocation);
         submit = dialogView.findViewById(R.id.submit);
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (validInput(eventName.getText().toString()) && validInput(eventTheme.getText().toString()) &&
+                        validInput(describeLocation.getText().toString())) {
+                    HostedEvent hostedEvent = new HostedEvent(
+                            name + "/" + email, eventName.getText().toString(), eventTheme.getText().toString(), null, null, null, true
+                    );
 
-                HostedEvent hostedEvent = new HostedEvent(
-                        email, eventName.getText().toString(), eventTheme.getText().toString(), null, null, null, true
-                );
+                    hostedEvent.setLocationDescription(describeLocation.getText().toString());
 
-                Map map = new HashMap();
-                map.put("time", ServerValue.TIMESTAMP);
-                map.put("event", hostedEvent);
+                    Map map = new HashMap();
+                    map.put("time", ServerValue.TIMESTAMP);
+                    map.put("event", hostedEvent);
 
-                eventReference.child(removeInvalidKeyCharacters(email)).push().setValue(map);
+                    eventReference.child(removeInvalidKeyCharacters(email)).push().setValue(map);
 
-                dialog.hide();
+                    eventName.setText("");
+                    eventTheme.setText("");
+                    describeLocation.setText("");
+
+                    dialog.hide();
+                }
             }
         });
     }
@@ -163,22 +185,29 @@ public class EventActivity extends AppCompatActivity {
                                     String[] dateTime = sdf.format(new Date(timeStamp)).split(" ");
 
                                     TextView hostName = dialogEventDetails.findViewById(R.id.hostName);
-                                    hostName.setText("Host: " + email);
+                                    hostName.setText("Host: " + hostedEvent.getHostName());
                                     TextView eventName = dialogEventDetails.findViewById(R.id.eventName);
                                     eventName.setText("Event Name: " + hostedEvent.getName());
                                     TextView eventTheme = dialogEventDetails.findViewById(R.id.eventTheme);
                                     eventTheme.setText("Event Theme: " + hostedEvent.getTheme());
+                                    TextView describeLocation = dialogEventDetails.findViewById(R.id.describeLocation);
+                                    describeLocation.setText("Location Description: " + hostedEvent.getLocationDescription());
                                     TextView date = dialogEventDetails.findViewById(R.id.date);
                                     date.setText("Date Begin: " + dateTime[0]);
                                     TextView timeBegin = dialogEventDetails.findViewById(R.id.timeBegin);
                                     timeBegin.setText("Time Begin: " + dateTime[1]);
                                     TextView timeEnd = dialogEventDetails.findViewById(R.id.timeEnd);
+
                                     if (hostedEvent.getEnd() != null)
                                         timeEnd.setText("Time End: " + hostedEvent.getEnd());
                                     else timeEnd.setText("");
                                     TextView active = dialogEventDetails.findViewById(R.id.active);
                                     if (hostedEvent.isActive()) active.setText("Active");
                                     else active.setText("Inactive");
+
+                                    Button end = dialogEventDetails.findViewById(R.id.end);
+                                    if (!hostedEvent.isActive()) end.setVisibility(View.GONE);
+                                    else end.setVisibility(View.VISIBLE);
 
 
                                     //Button end = dialogEventDetails.findViewById(R.id.endEvent);
@@ -204,6 +233,9 @@ public class EventActivity extends AppCompatActivity {
                                                     m.put("time", startTime);
 
                                                     eventReference.child(removeInvalidKeyCharacters(email)).child(key).setValue(m);
+                                                    eventDetails.hide();
+                                                    startActivity(new Intent(context, LoginActivity.class));
+                                                    finish();
                                                 }
 
                                                 @Override
@@ -214,7 +246,7 @@ public class EventActivity extends AppCompatActivity {
 
                                         }
                                     };
-                                    //end.setOnClickListener(eBL);
+                                    end.setOnClickListener(eBL);
                                     eventDetails.show();
                                 }
                             };
@@ -226,10 +258,9 @@ public class EventActivity extends AppCompatActivity {
 
                     @Override
                     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                        Toast.makeText(EventActivity.this, ""+dataSnapshot.getValue().toString(), Toast.LENGTH_SHORT).show();
-                        if (!dataSnapshot.getKey().equals("timeEnd")) {
-
-                        }
+                        //Toast.makeText(EventActivity.this, ""+dataSnapshot.getValue().toString(), Toast.LENGTH_SHORT).show();
+                       // if (!dataSnapshot.getKey().equals("timeEnd")) {
+                        // }
 
 
                         /*HostedEvent hostedEvent = (HostedEvent) dataSnapshot.getValue();
@@ -319,7 +350,8 @@ public class EventActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_event, menu);
+        if (getIntent().getBundleExtra("user").getBoolean("current") == true)
+            getMenuInflater().inflate(R.menu.menu_event, menu);
         return true;
     }
 
@@ -406,5 +438,11 @@ public class EventActivity extends AppCompatActivity {
         public int getCount() {
             return 2;
         }
+    }
+    @Override
+    public void onBackPressed() {
+        Intent setIntent = new Intent(this,LoginActivity.class);
+        startActivity(setIntent);
+        finish();
     }
 }

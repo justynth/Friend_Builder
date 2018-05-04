@@ -6,24 +6,41 @@ public abstract class User {
     protected String email;
     protected String name;
     protected String description;
-    protected double latitude;
-    protected double longitude;
+    protected double lat;
+    protected double lon;
     protected String interest0;
     protected String interest1;
     protected String interest2;
 
-    public double getLat() {return latitude;}
-    public double getLon() {return longitude;}
+    public double getLat() {return lat;}
+    public double getLon() {return lon;}
     public void setLatitude(double l){
-        this.latitude = l;
+        this.lat = l;
     }
     public void setLongitude(double l){
-        this.longitude = l;
+        this.lon = l;
     }
 
-    public String getInterest0() {return interest0;}
-    public String getInterest1() {return interest1;}
-    public String getInterest2() {return interest2;}
+    public String getInterest0() {
+        if(interest0 == null){return "Interest 0";}
+        else
+        {
+            return interest0;
+        }
+    }
+    public String getInterest1()
+    {
+        if(interest1 == null){return "Interest 1";}
+        else
+        {return interest1;}
+    }
+    public String getInterest2() {
+        if (interest2 == null) {
+            return "Interest 2";
+        } else {
+            return interest2;
+        }
+    }
     public void setInterest0(String a) {this.interest0 = a;}
     public void setInterest1(String a) {this.interest1 = a;}
     public void setInterest2(String a) {this.interest2 = a;}

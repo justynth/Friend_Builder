@@ -10,6 +10,7 @@ public class Event {
     protected String date;
     protected String begin;
     protected String end;
+    protected String locationDescription;
     protected boolean active;
 
     public String getHostName() {
@@ -58,6 +59,14 @@ public class Event {
 
     public void setEnd(String end) {
         this.end = end;
+    }
+
+    public String getLocationDescription() {
+        return locationDescription;
+    }
+
+    public void setLocationDescription(String locationDescription) {
+        this.locationDescription = locationDescription;
     }
 
     public boolean isActive() {
